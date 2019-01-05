@@ -20,6 +20,11 @@ environment-variables:
   CDFFILE   # the registry path (default: ~/.local/share/cdf/cdf.json)
 ```
 
+Requirements
+------------
+
+- Perl (5.14.0 and later)
+
 Installation
 ------------
 
