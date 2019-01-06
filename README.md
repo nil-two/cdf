@@ -29,6 +29,7 @@ Installation
 ------------
 
 1. Copy `cdf` into your `$PATH`.
+1. Make `cdf` executable.
 2. Add `eval "$(cdf -w)"` to your shell's rc file.
 
 If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows:
@@ -131,7 +132,7 @@ $ eval "$(cdf -w zsh)"
 
 ### cdf -h
 
-Print usage
+Print usage.
 
 ```
 $ cdf -h
