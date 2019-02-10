@@ -23,14 +23,14 @@ environment-variables:
 Requirements
 ------------
 
-- Perl (5.14.0 and later)
+- Perl (5.14.0 or later)
 
 Installation
 ------------
 
 1. Copy `cdf` into your `$PATH`.
-1. Make `cdf` executable.
-2. Add `eval "$(cdf -w)"` to your shell's rc file.
+2. Make `cdf` executable.
+3. Add `eval "$(cdf -w)"` to your shell's rc file.
 
 If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows:
 
@@ -117,7 +117,7 @@ $ cdf go
 ### cdf -w [sh|bash|zsh]
 
 Output the wrapper script.
-If specified shell, it outputs wrapper script optimized for the shell.
+If shell specified, it outputs wrapper script optimized for the shell.
 
 ```
 $ eval "$(cdf -w)"
