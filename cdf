@@ -11,13 +11,13 @@ my $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.local/share/cdf/cdf.json";
 my $cmd_name = $0 =~ s/.*\///r;
 my $usage = <<EOF;
 usage:
-  $cmd_name [--] <label>         # chdir to the path so labeled
-  $cmd_name -a <label> [<path>]  # save the path with the label
-  $cmd_name -g <label>           # get the path so labeled
-  $cmd_name -l                   # list labels
-  $cmd_name -r <label>           # remove the label
-  $cmd_name -w [sh|bash|zsh]     # output the wrapper script (default: sh)
-  $cmd_name -h                   # print usage
+  $cmd_name [--] <label>          # chdir to the path so labeled
+  $cmd_name -a <label> [<path>]   # save the path with the label
+  $cmd_name -g <label>            # get the path so labeled
+  $cmd_name -l                    # list labels
+  $cmd_name -r <label>            # remove the label
+  $cmd_name -w [sh|bash|zsh|yash] # output the wrapper script (default: sh)
+  $cmd_name -h                    # print usage
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.local/share/cdf/cdf.json)
@@ -217,7 +217,7 @@ if ($mode eq "-a") {
                             COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
                             ;;
                         -w)
-                            COMPREPLY=( \$(compgen -W "sh bash zsh" -- "\$cur") )
+                            COMPREPLY=( \$(compgen -W "sh bash zsh yash" -- "\$cur") )
                             ;;
                     esac
                     ;;
@@ -287,7 +287,7 @@ if ($mode eq "-a") {
                             _values "label" \$(cdf -l)
                             ;;
                         -w)
-                            _values "type" sh bash zsh
+                            _values "type" sh bash zsh yash
                             ;;
                         -h)
                             ;;
@@ -296,6 +296,82 @@ if ($mode eq "-a") {
             esac
         }
         compdef _cdf cdf
+        EOF
+    } elsif ($type eq "yash") {
+        print <<"        EOF" =~ s/^ {8}//gmr;
+        function cdf {
+            if [ \$# -eq 0 ]; then
+                @{[sh_escape $cmd_path]}
+                return
+            elif [ \$# -ge 1 ] && [ "\$1" != "\${1#-}" ] && [ "\$1" != "--" ]; then
+                @{[sh_escape $cmd_path]} "\$@"
+                return
+            fi
+
+            if [ "\$1" = "--" ]; then
+                shift
+            fi
+
+            set -- "\$(@{[sh_escape $cmd_path]} -g "\$1")"
+            if [ -n "\$1" ]; then
+                cd "\$1" || return
+            fi
+        }
+        function completion/cdf {
+          CWORD=\${WORDS[#]}
+
+          case \$CWORD in
+            1)
+              case \$TARGETWORD in
+                -*) command -f completion/cdf::completecmd ;;
+                *)  command -f completion/cdf::completelabel ;;
+              esac
+              ;;
+            *)
+              cmd=\${WORDS[2]}
+              case \$cmd in
+                --)
+                  command -f completion/cdf::completelabel
+                  ;;
+                -a)
+                  case \$CWORD in
+                    2) command -f completion/cdf::completelabel ;;
+                    *) complete -d ;;
+                  esac
+                  ;;
+                -g)
+                  command -f completion/cdf::completelabel
+                  ;;
+                -l)
+                  ;;
+                -r)
+                  command -f completion/cdf::completelabel
+                  ;;
+                -w)
+                  command -f completion/cdf::completewrapper
+                  ;;
+              esac
+              ;;
+          esac
+        }
+
+        function completion/cdf::completecmd {
+          complete -D "chdir to the path so labeled" -- --
+          complete -D "save the path with the label" -- -a
+          complete -D "get the path so labeled"      -- -g
+          complete -D "list labels"                  -- -l
+          complete -D "remove the label"             -- -r
+          complete -D "output the wrapper script"    -- -w
+          complete -D "print usage"                  -- -h
+        }
+
+        function completion/cdf::completelabel {
+          complete -- \$(cdf -l)
+        }
+
+        function completion/cdf::completewrapper {
+          complete -- sh bash zsh yash
+        }
         EOF
     } else {
         print STDERR "$cmd_name: $mode: $type doesn't supported\n";

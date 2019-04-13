@@ -8,13 +8,13 @@ Usage
 
 ```
 usage:
-  cdf [--] <label>         # chdir to the path so labeled
-  cdf -a <label> [<path>]  # save the path with the label
-  cdf -g <label>           # get the path so labeled
-  cdf -l                   # list labels
-  cdf -r <label>           # remove the label
-  cdf -w [sh|bash|zsh]     # output the wrapper script (default: sh)
-  cdf -h                   # print usage
+  cdf [--] <label>          # chdir to the path so labeled
+  cdf -a <label> [<path>]   # save the path with the label
+  cdf -g <label>            # get the path so labeled
+  cdf -l                    # list labels
+  cdf -r <label>            # remove the label
+  cdf -w [sh|bash|zsh|yash] # output the wrapper script (default: sh)
+  cdf -h                    # print usage
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.local/share/cdf/cdf.json)
@@ -38,6 +38,7 @@ If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows
 |-------|-----------------------|
 | Bash  | eval "$(cdf -w bash)" |
 | Zsh   | eval "$(cdf -w zsh)"  |
+| Yash  | eval "$(cdf -w yash)" |
 
 ### Example
 
@@ -114,7 +115,7 @@ $ cdf go
 (Remove the path labeled go)
 ```
 
-### cdf -w [sh|bash|zsh]
+### cdf -w [sh|bash|zsh|yash]
 
 Output the wrapper script.
 If shell specified, it outputs wrapper script optimized for the shell.
