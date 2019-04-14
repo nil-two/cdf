@@ -6,7 +6,7 @@ use autouse "File::Basename" => qw(dirname);
 use autouse "File::Path" => qw(make_path);
 use autouse "JSON::PP" => qw(encode_json decode_json);
 
-my $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.local/share/cdf/cdf.json";
+my $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
 
 my $cmd_name = $0 =~ s/.*\///r;
 my $usage = <<EOF;
@@ -23,7 +23,7 @@ supported-shells:
   sh, bash, fish, zsh, yash
 
 environment-variables:
-  CDFFILE   # the registry path (default: ~/.local/share/cdf/cdf.json)
+  CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
 EOF
 
 sub read_file {

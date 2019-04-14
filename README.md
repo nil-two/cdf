@@ -20,7 +20,7 @@ supported-shells:
   sh, bash, zsh, yash, fish
 
 environment-variables:
-  CDFFILE   # the registry path (default: ~/.local/share/cdf/cdf.json)
+  CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
 ```
 
 Requirements
@@ -158,7 +158,7 @@ Variables
 ### CDFFILE
 
 The path of the registry file.
-Default value is `$HOME/.local/share/cdf/cdf.json`.
+Default value is `$HOME/.config/cdf/cdf.json`.
 
 License
 -------
