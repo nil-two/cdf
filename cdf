@@ -248,7 +248,7 @@ sub main {
                 local path
                 path=\$(@{[sh_escape $cmd_path]} -g "\$1")
                 if [[ -n \$path ]]; then
-                    cd "\$path"
+                    cd "\$path" || return
                 fi
             }
 
