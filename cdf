@@ -190,6 +190,7 @@ sub main {
                     cd "\$path" || return
                 fi
             }
+
             _cdf() {
                 local cur=\${COMP_WORDS[COMP_CWORD]}
                 case \$COMP_CWORD in
@@ -247,6 +248,7 @@ sub main {
                     cd "\$path"
                 fi
             }
+
             _cdf() {
                 local cur=\${words[\$CURRENT]}
                 case \$CURRENT in
@@ -321,6 +323,7 @@ sub main {
                     cd "\$1" || return
                 fi
             }
+
             function completion/cdf {
               CWORD=\${WORDS[#]}
 
