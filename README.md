@@ -160,6 +160,16 @@ Variables
 The path of the registry file.
 Default value is `$HOME/.config/cdf/cdf.json`.
 
+The structure of JSON is as follows:
+
+```
+{
+  "<label1>": "<path1>",
+  "<label2>": "<path2>",
+  ...
+}
+```
+
 License
 -------
 
