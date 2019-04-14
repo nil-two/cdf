@@ -157,6 +157,9 @@ sub main {
                 if [ \$# -eq 0 ]; then
                     @{[sh_escape $cmd_path]}
                     return
+                elif [ \$# -eq 1 ] && [ "\$1" = "--" ]; then
+                    @{[sh_escape $cmd_path]}
+                    return
                 elif [ \$# -ge 1 ] && [ "\$1" != "\${1#-}" ] && [ "\$1" != "--" ]; then
                     @{[sh_escape $cmd_path]} "\$@"
                     return
@@ -175,7 +178,7 @@ sub main {
         } elsif ($type eq "bash") {
             print <<"            EOF" =~ s/^ {12}//gmr;
             cdf() {
-                if [[ \$# -eq 0 || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
+                if [[ \$# -eq 0 || ( \$# -eq 1 && \$1 = -- ) || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
                     @{[sh_escape $cmd_path]} "\$@"
                     return
                 fi
@@ -233,7 +236,7 @@ sub main {
         } elsif ($type eq "zsh") {
             print <<"            EOF" =~ s/^ {12}//gmr;
             cdf() {
-                if [[ \$# -eq 0 || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
+                if [[ \$# -eq 0 || ( \$# -eq 1 && \$1 = -- ) || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
                     @{[sh_escape $cmd_path]} "\$@"
                     return
                 fi
@@ -307,6 +310,9 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             function cdf {
                 if [ \$# -eq 0 ]; then
+                    @{[sh_escape $cmd_path]}
+                    return
+                elif [ \$# -eq 1 ] && [ "\$1" = "--" ]; then
                     @{[sh_escape $cmd_path]}
                     return
                 elif [ \$# -ge 1 ] && [ "\$1" != "\${1#-}" ] && [ "\$1" != "--" ]; then
@@ -387,6 +393,10 @@ sub main {
                 @{[sh_escape $cmd_path]}
                 return
               end
+              if test (count \$argv) -eq 1; and test \$argv[1] = "--"
+                @{[sh_escape $cmd_path]}
+                return
+              end
               if test (count \$argv) -ge 1; and string match -q -r "^-" -- \$argv[1]; and test \$argv[1] != "--"
                 @{[sh_escape $cmd_path]} \$argv
                 return
@@ -409,7 +419,7 @@ sub main {
               switch \$cword
                 case 1
                   switch \$cur
-                    case '-*'
+                    case "-*"
                       echo -es -- "--" "\\t" "Chdir to the path so labeled"
                       echo -es -- "-a" "\\t" "Save the path with the label"
                       echo -es -- "-g" "\\t" "Get the path so labeled"
@@ -417,26 +427,26 @@ sub main {
                       echo -es -- "-r" "\\t" "Remove the label"
                       echo -es -- "-w" "\\t" "Output the wrapper script"
                       echo -es -- "-h" "\\t" "Print usage"
-                    case '*'
+                    case "*"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
                   end
-                case '*'
+                case "*"
                   set -l cmd \$words[2]
                   switch \$cmd
-                    case '--'
+                    case "--"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
-                    case '-a'
+                    case "-a"
                       switch \$cword
                         case 2
                           cdf -l | awk '{print \$0 "\\t" "Label"}'
                         case 3
                           __fish_complete_directories \$cur
                       end
-                    case '-g'
+                    case "-g"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
-                    case '-r'
+                    case "-r"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
-                    case '-w'
+                    case "-w"
                       printf "%s\\n" sh bash zsh yash fish | awk '{print \$0 "\\t" "Shell"}'
                   end
               end
