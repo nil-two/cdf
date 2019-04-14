@@ -39,10 +39,10 @@ If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows
 
 | Shell |                              |
 |-------|------------------------------|
-| Bash  | eval "$(cdf -w bash)"        |
-| Zsh   | eval "$(cdf -w zsh)"         |
-| Yash  | eval "$(cdf -w yash)"        |
-| Fish  | source (cdf -w fish \| psub) |
+| bash  | eval "$(cdf -w bash)"        |
+| zsh   | eval "$(cdf -w zsh)"         |
+| yash  | eval "$(cdf -w yash)"        |
+| fish  | source (cdf -w fish \| psub) |
 
 ### Example
 
@@ -137,10 +137,10 @@ $ eval "$(cdf -w)"
 (Enable the shell integration for the shell compatible with Bourne Shell)
 
 $ eval "$(cdf -w bash)"
-(Enable the shell integration for Bash)
+(Enable the shell integration for bash)
 
 $ eval "$(cdf -w zsh)"
-(Enable the shell integration for Zsh)
+(Enable the shell integration for zsh)
 ```
 
 ### cdf -h
