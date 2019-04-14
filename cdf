@@ -11,13 +11,16 @@ my $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.local/share/cdf/cdf.json";
 my $cmd_name = $0 =~ s/.*\///r;
 my $usage = <<EOF;
 usage:
-  $cmd_name [--] <label>          # chdir to the path so labeled
-  $cmd_name -a <label> [<path>]   # save the path with the label
-  $cmd_name -g <label>            # get the path so labeled
-  $cmd_name -l                    # list labels
-  $cmd_name -r <label>            # remove the label
-  $cmd_name -w [sh|bash|zsh|yash] # output the wrapper script (default: sh)
-  $cmd_name -h                    # print usage
+  $cmd_name [--] <label>         # chdir to the path so labeled
+  $cmd_name -a <label> [<path>]  # save the path with the label
+  $cmd_name -g <label>           # get the path so labeled
+  $cmd_name -l                   # list labels
+  $cmd_name -r <label>           # remove the label
+  $cmd_name -w [<shell>]         # output the wrapper script (default: sh)
+  $cmd_name -h                   # print usage
+
+supported-shells:
+  sh, bash, fish, zsh, yash
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.local/share/cdf/cdf.json)
@@ -217,7 +220,7 @@ if ($mode eq "-a") {
                             COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
                             ;;
                         -w)
-                            COMPREPLY=( \$(compgen -W "sh bash zsh yash" -- "\$cur") )
+                            COMPREPLY=( \$(compgen -W "sh bash zsh yash fish" -- "\$cur") )
                             ;;
                     esac
                     ;;
@@ -287,7 +290,7 @@ if ($mode eq "-a") {
                             _values "label" \$(cdf -l)
                             ;;
                         -w)
-                            _values "type" sh bash zsh yash
+                            _values "type" sh bash zsh yash fish
                             ;;
                         -h)
                             ;;
@@ -370,8 +373,71 @@ if ($mode eq "-a") {
         }
 
         function completion/cdf::completewrapper {
-          complete -- sh bash zsh yash
+          complete -- sh bash zsh yash fish
         }
+        EOF
+    } elsif ($type eq "fish") {
+        print <<"        EOF" =~ s/^ {8}//gmr;
+        function cdf
+          if test (count \$argv) -eq 0
+            @{[sh_escape $cmd_path]}
+            return
+          end
+          if test (count \$argv) -ge 1; and string match -q -r "^-" -- \$argv[1]; and test \$argv[1] != "--"
+            @{[sh_escape $cmd_path]} \$argv
+            return
+          end
+
+          if test \$argv[1] = "--"
+            set argv \$argv[2..-1]
+          end
+
+          set -l path (@{[sh_escape $cmd_path]} -g \$argv[1])
+          if test -n "\$path"
+            cd \$path
+          end
+        end
+
+        function __fish_cdf_complete
+          set -l cur (commandline -tc)
+          set -l words (commandline -pco)
+          set -l cword (count \$words)
+          switch \$cword
+            case 1
+              switch \$cur
+                case '-*'
+                  echo -es -- "--" "\\t" "Chdir to the path so labeled"
+                  echo -es -- "-a" "\\t" "Save the path with the label"
+                  echo -es -- "-g" "\\t" "Get the path so labeled"
+                  echo -es -- "-l" "\\t" "List labels"
+                  echo -es -- "-r" "\\t" "Remove the label"
+                  echo -es -- "-w" "\\t" "Output the wrapper script"
+                  echo -es -- "-h" "\\t" "Print usage"
+                case '*'
+                  cdf -l | awk '{print \$0 "\\t" "Label"}'
+              end
+            case '*'
+              set -l cmd \$words[2]
+              switch \$cmd
+                case '--'
+                  cdf -l | awk '{print \$0 "\\t" "Label"}'
+                case '-a'
+                  switch \$cword
+                    case 2
+                      cdf -l | awk '{print \$0 "\\t" "Label"}'
+                    case 3
+                      __fish_complete_directories \$cur
+                  end
+                case '-g'
+                  cdf -l | awk '{print \$0 "\\t" "Label"}'
+                case '-r'
+                  cdf -l | awk '{print \$0 "\\t" "Label"}'
+                case '-w'
+                  printf "%s\\n" sh bash zsh yash fish | awk '{print \$0 "\\t" "Shell"}'
+              end
+          end
+        end
+        complete -c cdf -f -a "(__fish_cdf_complete)"
         EOF
     } else {
         print STDERR "$cmd_name: $mode: $type doesn't supported\n";

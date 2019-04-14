@@ -8,13 +8,16 @@ Usage
 
 ```
 usage:
-  cdf [--] <label>          # chdir to the path so labeled
-  cdf -a <label> [<path>]   # save the path with the label
-  cdf -g <label>            # get the path so labeled
-  cdf -l                    # list labels
-  cdf -r <label>            # remove the label
-  cdf -w [sh|bash|zsh|yash] # output the wrapper script (default: sh)
-  cdf -h                    # print usage
+  cdf [--] <label>         # chdir to the path so labeled
+  cdf -a <label> [<path>]  # save the path with the label
+  cdf -g <label>           # get the path so labeled
+  cdf -l                   # list labels
+  cdf -r <label>           # remove the label
+  cdf -w [<shell>]         # output the wrapper script (default: sh)
+  cdf -h                   # print usage
+
+supported-shells:
+  sh, bash, zsh, yash, fish
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.local/share/cdf/cdf.json)
@@ -34,11 +37,12 @@ Installation
 
 If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows:
 
-| Shell |                       |
-|-------|-----------------------|
-| Bash  | eval "$(cdf -w bash)" |
-| Zsh   | eval "$(cdf -w zsh)"  |
-| Yash  | eval "$(cdf -w yash)" |
+| Shell |                              |
+|-------|------------------------------|
+| Bash  | eval "$(cdf -w bash)"        |
+| Zsh   | eval "$(cdf -w zsh)"         |
+| Yash  | eval "$(cdf -w yash)"        |
+| Fish  | source (cdf -w fish \| psub) |
 
 ### Example
 
@@ -115,10 +119,18 @@ $ cdf go
 (Remove the path labeled go)
 ```
 
-### cdf -w [sh|bash|zsh|yash]
+### cdf -w [\<shell\>]
 
 Output the wrapper script.
 If shell specified, it outputs wrapper script optimized for the shell.
+
+Supported shells are as follows:
+
+- sh
+- bash
+- zsh
+- yash
+- fish
 
 ```
 $ eval "$(cdf -w)"
