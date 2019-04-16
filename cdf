@@ -41,13 +41,6 @@ sub write_file {
     close $fh or die $!;
 }
 
-sub sh_escape {
-    my ($s) = @_;
-    $s =~ s/'/'"'"'/g;
-    $s =~ s/^|$/'/g;
-    return $s;
-}
-
 sub main {
     if ((@ARGV == 0) || (@ARGV == 1 && $ARGV[0] eq "--")) {
         print STDERR $usage;
@@ -149,19 +142,17 @@ sub main {
 
         my $type = $ARGV[0] // "sh";
 
-        my $cmd_path = abs_path($0);
-
         if ($type eq "sh") {
             print <<"            EOF" =~ s/^ {12}//gmr;
             cdf() {
                 if [ \$# -eq 0 ]; then
-                    @{[sh_escape $cmd_path]}
+                    command -- cdf
                     return
                 elif [ \$# -eq 1 ] && [ "\$1" = "--" ]; then
-                    @{[sh_escape $cmd_path]}
+                    command -- cdf
                     return
                 elif [ \$# -ge 1 ] && [ "\$1" != "\${1#-}" ] && [ "\$1" != "--" ]; then
-                    @{[sh_escape $cmd_path]} "\$@"
+                    command -- cdf "\$@"
                     return
                 fi
 
@@ -169,7 +160,7 @@ sub main {
                     shift
                 fi
 
-                set -- "\$(@{[sh_escape $cmd_path]} -g "\$1")"
+                set -- "\$(command -- cdf -g "\$1")"
                 if [ -n "\$1" ]; then
                     cd "\$1" || return
                 fi
@@ -179,7 +170,7 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             cdf() {
                 if [[ \$# -eq 0 || ( \$# -eq 1 && \$1 = -- ) || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
-                    @{[sh_escape $cmd_path]} "\$@"
+                    command -- cdf "\$@"
                     return
                 fi
 
@@ -188,7 +179,7 @@ sub main {
                 fi
 
                 local path
-                path=\$(@{[sh_escape $cmd_path]} -g "\$1")
+                path=\$(command -- cdf -g "\$1")
                 if [[ -n \$path ]]; then
                     cd "\$path" || return
                 fi
@@ -237,7 +228,7 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             cdf() {
                 if [[ \$# -eq 0 || ( \$# -eq 1 && \$1 = -- ) || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
-                    @{[sh_escape $cmd_path]} "\$@"
+                    command -- cdf "\$@"
                     return
                 fi
 
@@ -246,7 +237,7 @@ sub main {
                 fi
 
                 local path
-                path=\$(@{[sh_escape $cmd_path]} -g "\$1")
+                path=\$(command -- cdf -g "\$1")
                 if [[ -n \$path ]]; then
                     cd "\$path" || return
                 fi
@@ -310,13 +301,13 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             function cdf {
                 if [ \$# -eq 0 ]; then
-                    @{[sh_escape $cmd_path]}
+                    command -- cdf
                     return
                 elif [ \$# -eq 1 ] && [ "\$1" = "--" ]; then
-                    @{[sh_escape $cmd_path]}
+                    command -- cdf
                     return
                 elif [ \$# -ge 1 ] && [ "\$1" != "\${1#-}" ] && [ "\$1" != "--" ]; then
-                    @{[sh_escape $cmd_path]} "\$@"
+                    command -- cdf "\$@"
                     return
                 fi
 
@@ -324,7 +315,7 @@ sub main {
                     shift
                 fi
 
-                set -- "\$(@{[sh_escape $cmd_path]} -g "\$1")"
+                set -- "\$(command -- cdf -g "\$1")"
                 if [ -n "\$1" ]; then
                     cd "\$1" || return
                 fi
@@ -390,15 +381,15 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             function cdf
               if test (count \$argv) -eq 0
-                @{[sh_escape $cmd_path]}
+                command cdf
                 return
               end
               if test (count \$argv) -eq 1; and test \$argv[1] = "--"
-                @{[sh_escape $cmd_path]}
+                command cdf
                 return
               end
               if test (count \$argv) -ge 1; and string match -q -r "^-" -- \$argv[1]; and test \$argv[1] != "--"
-                @{[sh_escape $cmd_path]} \$argv
+                command cdf \$argv
                 return
               end
 
@@ -406,7 +397,7 @@ sub main {
                 set argv \$argv[2..-1]
               end
 
-              set -l path (@{[sh_escape $cmd_path]} -g \$argv[1])
+              set -l path (command cdf -g \$argv[1])
               if test -n "\$path"
                 cd \$path
               end
