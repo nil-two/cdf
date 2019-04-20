@@ -20,7 +20,7 @@ usage:
   $cmd_name -h                   # print usage
 
 supported-shells:
-  sh, bash, fish, zsh, yash
+  sh, bash, fish, zsh, yash, tcsh
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
@@ -216,7 +216,7 @@ sub main {
                                 COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
                                 ;;
                             -w)
-                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish" -- "\$cur") )
+                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish tcsh" -- "\$cur") )
                                 ;;
                         esac
                         ;;
@@ -287,7 +287,7 @@ sub main {
                                 _values "label" \$(cdf -l)
                                 ;;
                             -w)
-                                _values "type" sh bash zsh yash fish
+                                _values "type" sh bash zsh yash fish tcsh
                                 ;;
                             -h)
                                 ;;
@@ -374,7 +374,7 @@ sub main {
             }
 
             function completion/cdf::completewrapper {
-              complete -- sh bash zsh yash fish
+              complete -- sh bash zsh yash fish tcsh
             }
             EOF
         } elsif ($type eq "fish") {
@@ -438,11 +438,46 @@ sub main {
                     case "-r"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
                     case "-w"
-                      printf "%s\\n" sh bash zsh yash fish | awk '{print \$0 "\\t" "Shell"}'
+                      printf "%s\\n" sh bash zsh yash fish tcsh | awk '{print \$0 "\\t" "Shell"}'
                   end
               end
             end
             complete -c cdf -f -a "(__fish_cdf_complete)"
+            EOF
+        } elsif ($type eq "tcsh") {
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            alias cdf '\\\\
+            set __cdfargs=(\\!:*);\\\\
+            set __cdfnextpath;\\\\
+            eval '"'"'\\\\
+            source /dev/stdin <<__BODY__\\\\
+            if (\\\$#__cdfargs == 0) then\\\\
+              command -- cdf\\\\
+              exit\\\\
+            endif\\\\
+            if (\\\$#__cdfargs == 1 && \\\$__cdfargs[1]:q == "--") then\\\\
+              command -- cdf\\\\
+              exit\\\\
+            endif\\\\
+            if (\\\$#__cdfargs >= 1 && \\\$__cdfargs[1]:q =~ -* && \\\$__cdfargs[1]:q != "--") then\\\\
+              command -- cdf \\\$__cdfargs:q\\\\
+              exit\\\\
+            endif\\\\
+            \\\\
+            if (\\\$__cdfargs[1]:q == "--") then\\\\
+              shift __cdfargs\\\\
+            endif\\\\
+            \\\\
+            set __cdfnextpath="\\`command -- cdf -g \\\$__cdfargs[1]:q\\`"\\\\
+            if (\\\$__cdfnextpath != "") then\\\\
+              cd \\\$__cdfnextpath:q\\\\
+            endif\\\\
+            __BODY__\\\\
+            '"'"';\\\\
+            unset __cdfargs;\\\\
+            unset __cdfnextpath;\\\\
+            '
+            true
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";

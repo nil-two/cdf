@@ -17,7 +17,7 @@ usage:
   cdf -h                   # print usage
 
 supported-shells:
-  sh, bash, zsh, yash, fish
+  sh, bash, zsh, yash, fish, tcsh
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
@@ -37,12 +37,13 @@ Installation
 
 If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows:
 
-| Shell |                              |
-|-------|------------------------------|
-| bash  | eval "$(cdf -w bash)"        |
-| zsh   | eval "$(cdf -w zsh)"         |
-| yash  | eval "$(cdf -w yash)"        |
-| fish  | source (cdf -w fish \| psub) |
+| Shell |                                                 |
+|-------|-------------------------------------------------|
+| bash  | eval "$(cdf -w bash)"                           |
+| zsh   | eval "$(cdf -w zsh)"                            |
+| yash  | eval "$(cdf -w yash)"                           |
+| fish  | source (cdf -w fish \| psub)                    |
+| tcsh  | unalias cdf<br>cdf -w tcsh \| source /dev/stdin |
 
 ### Example
 
@@ -131,6 +132,7 @@ Supported shells are as follows:
 - zsh
 - yash
 - fish
+- tcsh
 
 ```
 $ eval "$(cdf -w)"
