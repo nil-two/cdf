@@ -116,7 +116,7 @@ Remove the label.
 $ cdf -r home
 (Remove the path labeled home)
 
-$ cdf go
+$ cdf -r go
 (Remove the path labeled go)
 ```
 
