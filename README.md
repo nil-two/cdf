@@ -143,6 +143,16 @@ $ eval "$(cdf -w bash)"
 
 $ eval "$(cdf -w zsh)"
 (Enable the shell integration for zsh)
+
+$ eval "$(cdf -w yash)"
+(Enable the shell integration for yash)
+
+$ source (cdf -w fish | psub)
+(Enable the shell integration for fish)
+
+$ unalias cdf
+$ cdf -w tcsh | source /dev/stdin
+(Enable the shell integration for tcsh)
 ```
 
 ### cdf -h
