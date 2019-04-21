@@ -178,10 +178,10 @@ sub main {
                     shift
                 fi
 
-                local path
-                path=\$(command -- cdf -g "\$1")
-                if [[ -n \$path ]]; then
-                    cd "\$path" || return
+                local nextpath
+                nextpath=\$(command -- cdf -g "\$1")
+                if [[ -n \$nextpath ]]; then
+                    cd "\$nextpath" || return
                 fi
             }
 
@@ -236,10 +236,10 @@ sub main {
                     shift
                 fi
 
-                local path
-                path=\$(command -- cdf -g "\$1")
-                if [[ -n \$path ]]; then
-                    cd "\$path" || return
+                local nextpath
+                nextpath=\$(command -- cdf -g "\$1")
+                if [[ -n \$nextpath ]]; then
+                    cd "\$nextpath" || return
                 fi
             }
 
@@ -397,9 +397,9 @@ sub main {
                 set argv \$argv[2..-1]
               end
 
-              set -l path (command cdf -g \$argv[1])
-              if test -n "\$path"
-                cd \$path
+              set -l nextpath (command cdf -g \$argv[1])
+              if test -n "\$nextpath"
+                cd \$nextpath
               end
             end
 
