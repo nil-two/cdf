@@ -447,6 +447,7 @@ sub main {
         } elsif ($type eq "tcsh") {
             print <<"            EOF" =~ s/^ {12}//gmr;
             alias cdf '\\\\
+            set __cdfq='"'"''"'"'"'"'"'"'"'"''"'"';\\\\
             set __cdfargs=(\\!:*);\\\\
             set __cdfnextpath;\\\\
             eval '"'"'\\\\
@@ -468,14 +469,16 @@ sub main {
               shift __cdfargs\\\\
             endif\\\\
             \\\\
-            set __cdfnextpath="\\`command -- cdf -g \\\$__cdfargs[1]:q\\`"\\\\
-            if (\\\$__cdfnextpath != "") then\\\\
+            command -- cdf -g \\\$__cdfargs[1]:q | sed \${__cdfq}s/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}/g; s/\\\\\\\\\\!/\\\\\\\\\\\\\\\\\\!/g; s/\\\$/\\\\\\\\/; 1s/^/\${__cdfq}"\${__cdfq}"\${__cdfq}/; \\\$s/\\\\\\\\\\\$/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq} | sed \${__cdfq}1s/^/set __cdfnextpath=/\${__cdfq} | source /dev/stdin\\\\
+            true\\\\
+            if (\\\$__cdfnextpath:q != "") then\\\\
               cd \\\$__cdfnextpath:q\\\\
             endif\\\\
             __BODY__\\\\
             '"'"';\\\\
             unset __cdfargs;\\\\
             unset __cdfnextpath;\\\\
+            unset __cdfq;\\\\
             '
             true
             EOF
