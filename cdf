@@ -476,11 +476,11 @@ sub main {
             endif\\\\
             __BODY__\\\\
             '"'"';\\\\
+            true;\\\\
             unset __cdfargs;\\\\
             unset __cdfnextpath;\\\\
             unset __cdfq;\\\\
             '
-            true
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
