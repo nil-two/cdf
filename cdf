@@ -452,28 +452,28 @@ sub main {
             set __cdfnextpath;\\\\
             eval '"'"'\\\\
             source /dev/stdin <<__BODY__\\\\
-            if (\\\$#__cdfargs == 0) then\\\\
-              command -- cdf\\\\
-              exit\\\\
-            endif\\\\
-            if (\\\$#__cdfargs == 1 && \\\$__cdfargs[1]:q == "--") then\\\\
-              command -- cdf\\\\
-              exit\\\\
-            endif\\\\
-            if (\\\$#__cdfargs >= 1 && \\\$__cdfargs[1]:q =~ -* && \\\$__cdfargs[1]:q != "--") then\\\\
-              command -- cdf \\\$__cdfargs:q\\\\
-              exit\\\\
-            endif\\\\
-            \\\\
-            if (\\\$__cdfargs[1]:q == "--") then\\\\
-              shift __cdfargs\\\\
-            endif\\\\
-            \\\\
-            command -- cdf -g \\\$__cdfargs[1]:q | sed \${__cdfq}s/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}/g; s/\\\\\\\\\\!/\\\\\\\\\\\\\\\\\\!/g; s/\\\$/\\\\\\\\/; 1s/^/\${__cdfq}"\${__cdfq}"\${__cdfq}/; \\\$s/\\\\\\\\\\\$/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq} | sed \${__cdfq}1s/^/set __cdfnextpath=/\${__cdfq} | source /dev/stdin\\\\
-            true\\\\
-            if (\\\$__cdfnextpath:q != "") then\\\\
-              cd \\\$__cdfnextpath:q\\\\
-            endif\\\\
+              if (\\\$#__cdfargs == 0) then\\\\
+                command -- cdf\\\\
+                exit\\\\
+              endif\\\\
+              if (\\\$#__cdfargs == 1 && \\\$__cdfargs[1]:q == "--") then\\\\
+                command -- cdf\\\\
+                exit\\\\
+              endif\\\\
+              if (\\\$#__cdfargs >= 1 && \\\$__cdfargs[1]:q =~ -* && \\\$__cdfargs[1]:q != "--") then\\\\
+                command -- cdf \\\$__cdfargs:q\\\\
+                exit\\\\
+              endif\\\\
+              \\\\
+              if (\\\$__cdfargs[1]:q == "--") then\\\\
+                shift __cdfargs\\\\
+              endif\\\\
+              \\\\
+              command -- cdf -g \\\$__cdfargs[1]:q | sed \${__cdfq}s/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}/g; s/\\\\\\\\\\!/\\\\\\\\\\\\\\\\\\!/g; s/\\\$/\\\\\\\\/; 1s/^/\${__cdfq}"\${__cdfq}"\${__cdfq}/; \\\$s/\\\\\\\\\\\$/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq} | sed \${__cdfq}1s/^/set __cdfnextpath=/\${__cdfq} | source /dev/stdin\\\\
+              true\\\\
+              if (\\\$__cdfnextpath:q != "") then\\\\
+                cd \\\$__cdfnextpath:q\\\\
+              endif\\\\
             __BODY__\\\\
             '"'"';\\\\
             true;\\\\
