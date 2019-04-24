@@ -475,8 +475,8 @@ sub main {
                 cd \\\$__cdfnextpath:q\\\\
               endif\\\\
             __BODY__\\\\
+            true\\\\
             '"'"';\\\\
-            true;\\\\
             unset __cdfargs;\\\\
             unset __cdfnextpath;\\\\
             unset __cdfq;\\\\
@@ -530,12 +530,12 @@ sub main {
                 breaksw\\\\
               endsw\\\\
             __BODY__\\\\
+            true\\\\
             '"'"';\\\\
             unset __cdfcompleteargs;\\\\
             unset __cdfq;\\\\
             '
             complete cdf 'p/*/`__cdfcomplete`/'
-            true
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
