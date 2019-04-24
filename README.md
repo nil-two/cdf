@@ -37,13 +37,13 @@ Installation
 
 If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows:
 
-| Shell |                                                 |
-|-------|-------------------------------------------------|
-| bash  | eval "$(cdf -w bash)"                           |
-| zsh   | eval "$(cdf -w zsh)"                            |
-| yash  | eval "$(cdf -w yash)"                           |
-| fish  | source (cdf -w fish \| psub)                    |
-| tcsh  | unalias cdf<br>cdf -w tcsh \| source /dev/stdin |
+| Shell |                                                         |
+|-------|---------------------------------------------------------|
+| bash  | eval "$(cdf -w bash)"                                   |
+| zsh   | eval "$(cdf -w zsh)"                                    |
+| yash  | eval "$(cdf -w yash)"                                   |
+| fish  | source (cdf -w fish \| psub)                            |
+| tcsh  | unalias cdf<br>cdf -w tcsh \| source /dev/stdin<br>true |
 
 ### Example
 
