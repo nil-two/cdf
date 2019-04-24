@@ -481,6 +481,61 @@ sub main {
             unset __cdfnextpath;\\\\
             unset __cdfq;\\\\
             '
+
+            alias __cdfcomplete '\\\\
+            set __cdfcompleteargs=(\$COMMAND_LINE);\\\\
+            set __cdfq='"'"''"'"'"'"'"'"'"'"''"'"';\\\\
+            eval '"'"'\\\\
+            source /dev/stdin <<__BODY__\\\\
+              if (\\\$COMMAND_LINE:q =~ "* ") then\\\\
+                set __cdfcompleteargs=(\\\$__cdfcompleteargs:q "")\\\\
+              endif\\\\
+              \\\\
+              switch (\\\$#__cdfcompleteargs)\\\\
+              case 2:\\\\
+                switch (\\\$__cdfcompleteargs[2]:q)\\\\
+                case "-*":\\\\
+                  printf "%s\\n" -- -a -g -l -r -w -h\\\\
+                  breaksw\\\\
+                default:\\\\
+                  command -- cdf -l\\\\
+                  breaksw\\\\
+                endsw\\\\
+                breaksw\\\\
+              default:\\\\
+                switch (\\\$__cdfcompleteargs[2]:q)\\\\
+                case "--":\\\\
+                  command -- cdf -l\\\\
+                  breaksw\\\\
+                case "-a":\\\\
+                  switch (\\\$#__cdfcompleteargs)\\\\
+                  case 3:\\\\
+                    command -- cdf -l\\\\
+                    breaksw\\\\
+                  default:\\\\
+                    sh -c \${__cdfq}ls -dp -- "\\\$1"* 2> /dev/null\${__cdfq} -- \\\$__cdfcompleteargs[\\\$#__cdfcompleteargs]:q | awk \${__cdfq}/\\/\\\$/{print;print}\${__cdfq}\\\\
+                    breaksw\\\\
+                  endsw\\\\
+                  breaksw\\\\
+                case "-g":\\\\
+                  command -- cdf -l\\\\
+                  breaksw\\\\
+                case "-r":\\\\
+                  command -- cdf -l\\\\
+                  breaksw\\\\
+                case "-w":\\\\
+                  printf "%s\\n" sh bash zsh yash fish tcsh\\\\
+                  breaksw\\\\
+                endsw\\\\
+                breaksw\\\\
+              endsw\\\\
+            __BODY__\\\\
+            '"'"';\\\\
+            unset __cdfcompleteargs;\\\\
+            unset __cdfq;\\\\
+            '
+            complete cdf 'p/*/`__cdfcomplete`/'
+            true
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
