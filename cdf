@@ -20,7 +20,7 @@ usage:
   $cmd_name -h                   # print usage
 
 supported-shells:
-  sh, bash, fish, zsh, yash, tcsh
+  sh, bash, fish, zsh, yash, tcsh, nyagos
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
@@ -216,7 +216,7 @@ sub main {
                                 COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
                                 ;;
                             -w)
-                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish tcsh" -- "\$cur") )
+                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish tcsh nyagos" -- "\$cur") )
                                 ;;
                         esac
                         ;;
@@ -287,7 +287,7 @@ sub main {
                                 _values "label" \$(cdf -l)
                                 ;;
                             -w)
-                                _values "type" sh bash zsh yash fish tcsh
+                                _values "type" sh bash zsh yash fish tcsh nyagos
                                 ;;
                             -h)
                                 ;;
@@ -374,7 +374,7 @@ sub main {
             }
 
             function completion/cdf::completewrapper {
-              complete -- sh bash zsh yash fish tcsh
+              complete -- sh bash zsh yash fish tcsh nyagos
             }
             EOF
         } elsif ($type eq "fish") {
@@ -438,7 +438,7 @@ sub main {
                     case "-r"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
                     case "-w"
-                      printf "%s\\n" sh bash zsh yash fish tcsh | awk '{print \$0 "\\t" "Shell"}'
+                      printf "%s\\n" sh bash zsh yash fish tcsh nyagos | awk '{print \$0 "\\t" "Shell"}'
                   end
               end
             end
@@ -524,7 +524,7 @@ sub main {
                   command -- cdf -l\\\\
                   breaksw\\\\
                 case "-w":\\\\
-                  printf "%s\\n" sh bash zsh yash fish tcsh\\\\
+                  printf "%s\\n" sh bash zsh yash fish tcsh nyagos\\\\
                   breaksw\\\\
                 endsw\\\\
                 breaksw\\\\
@@ -536,6 +536,57 @@ sub main {
             unset __cdfq;\\\\
             '
             complete cdf 'p/*/`__cdfcomplete`/'
+            EOF
+        } elsif ($type eq "nyagos") {
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            nyagos.alias.cdf = function(args)
+              if (#args == 0) or (#args == 1 and args[1] == "--") or (#args >= 1 and args[1]:match([[^-]]) and args[1] ~= "--") then
+                nyagos.exec({"command", "--", "cdf", unpack(args)})
+                return
+              end
+
+              if args[1] == "--" then
+                table.remove(args, 1)
+              end
+
+              local label        = args[1]
+              local quoted_label = label:gsub([[']], [['"'"']]):gsub([[^]], [[']]):gsub([[\$]], [[']])
+              local next_path    = nyagos.eval("command -- cdf -g " .. quoted_label)
+              if next_path ~= nil and next_path ~= "" then
+                nyagos.chdir(next_path)
+              end
+            end
+            nyagos.complete_for.cdf = function(args)
+              local cur = args[#args]
+              if #args == 2 then
+                if cur:match([[^-]]) then
+                  return nyagos.fields("-- -a -g -l -r -w -h")
+                else
+                  return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                end
+              else
+                local cmd = args[2]
+                if cmd == "--" then
+                  return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                elseif cmd == "-a" then
+                  if #args == 3 then
+                    return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                  else
+                    return nil
+                  end
+                elseif cmd == "-g" then
+                  return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                elseif cmd == "-l" then
+                  return {}
+                elseif cmd == "-r" then
+                  return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                elseif cmd == "-w" then
+                  return nyagos.fields("sh bash zsh yash fish tcsh nyagos")
+                elseif cmd == "-h" then
+                  return {}
+                end
+              end
+            end
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
