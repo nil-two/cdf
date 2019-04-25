@@ -1,3 +1,7 @@
+### v2.1.0 - 2019-04-25
+
+- Support nyagos.
+
 ### v2.1.0 - 2019-04-24
 
 - Support tcsh.
