@@ -549,7 +549,7 @@ sub main {
                 shift
               }
 
-              ifs='' nextpath=`{command -- cdf -g \$1 | awk 'NR==1{l=\$0;while(getline){print l;l=\$0};printf"%s",l}'} if (test ! -z \$nextpath) {
+              ifs='' nextpath=`{command -- cdf -g \$1 | awk 'NR==1{l=\$0;while(getline){print l;l=\$0};printf"%s",l}'} if (test -n \$nextpath) {
                 cd \$nextpath
               }
             }
