@@ -17,7 +17,7 @@ usage:
   cdf -h                   # print usage
 
 supported-shells:
-  sh, bash, zsh, yash, fish, tcsh, nyagos
+  sh, bash, zsh, yash, fish, tcsh, rc, nyagos
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
@@ -44,6 +44,7 @@ If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows
 | yash   | eval "$(cdf -w yash)"                                   |
 | fish   | source (cdf -w fish \| psub)                            |
 | tcsh   | unalias cdf<br>cdf -w tcsh \| source /dev/stdin<br>true |
+| rc     | ifs='' eval \`{cdf -w rc}                               |
 | nyagos | lua\_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"   |
 
 ### Example
@@ -134,6 +135,7 @@ Supported shells are as follows:
 - yash
 - fish
 - tcsh
+- rc
 - nyagos
 
 ```
@@ -155,6 +157,9 @@ $ source (cdf -w fish | psub)
 $ unalias cdf
 $ cdf -w tcsh | source /dev/stdin
 (Enable the shell integration for tcsh)
+
+$ ifs='' eval `{cdf -w rc}
+(Enable the shell integration for rc)
 
 $ lua_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"
 (Enable the shell integration for nyagos)

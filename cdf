@@ -20,7 +20,7 @@ usage:
   $cmd_name -h                   # print usage
 
 supported-shells:
-  sh, bash, fish, zsh, yash, tcsh, nyagos
+  sh, bash, fish, zsh, yash, tcsh, rc, nyagos
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
@@ -216,7 +216,7 @@ sub main {
                                 COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
                                 ;;
                             -w)
-                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish tcsh nyagos" -- "\$cur") )
+                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish tcsh rc nyagos" -- "\$cur") )
                                 ;;
                         esac
                         ;;
@@ -287,7 +287,7 @@ sub main {
                                 _values "label" \$(cdf -l)
                                 ;;
                             -w)
-                                _values "type" sh bash zsh yash fish tcsh nyagos
+                                _values "type" sh bash zsh yash fish tcsh rc nyagos
                                 ;;
                             -h)
                                 ;;
@@ -374,7 +374,7 @@ sub main {
             }
 
             function completion/cdf::completewrapper {
-              complete -- sh bash zsh yash fish tcsh nyagos
+              complete -- sh bash zsh yash fish tcsh rc nyagos
             }
             EOF
         } elsif ($type eq "fish") {
@@ -438,7 +438,7 @@ sub main {
                     case "-r"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
                     case "-w"
-                      printf "%s\\n" sh bash zsh yash fish tcsh nyagos | awk '{print \$0 "\\t" "Shell"}'
+                      printf "%s\\n" sh bash zsh yash fish tcsh rc nyagos | awk '{print \$0 "\\t" "Shell"}'
                   end
               end
             end
@@ -524,7 +524,7 @@ sub main {
                   command -- cdf -l\\\\
                   breaksw\\\\
                 case "-w":\\\\
-                  printf "%s\\n" sh bash zsh yash fish tcsh nyagos\\\\
+                  printf "%s\\n" sh bash zsh yash fish tcsh rc nyagos\\\\
                   breaksw\\\\
                 endsw\\\\
                 breaksw\\\\
@@ -536,6 +536,23 @@ sub main {
             unset __cdfq;\\\\
             '
             complete cdf 'p/*/`__cdfcomplete`/'
+            EOF
+        } elsif ($type eq "rc") {
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            fn cdf {
+              if ({~ \$#* 0} || {~ \$#* 1 && ~ \$1 '--'} || {test \$#* -ge 1 && ~ \$1 -* && ! ~ \$1 '--'}) {
+                command -- cdf \$*
+                return
+              }
+
+              if (~ \$1 '--') {
+                shift
+              }
+
+              ifs='' nextpath=`{command -- cdf -g \$1 | awk 'NR==1{l=\$0;while(getline){print l;l=\$0};printf"%s",l}'} if (test ! -z \$nextpath) {
+                cd \$nextpath
+              }
+            }
             EOF
         } elsif ($type eq "nyagos") {
             print <<"            EOF" =~ s/^ {12}//gmr;
@@ -581,7 +598,7 @@ sub main {
                 elseif cmd == "-r" then
                   return nyagos.fields(nyagos.eval("command -- cdf -l"))
                 elseif cmd == "-w" then
-                  return nyagos.fields("sh bash zsh yash fish tcsh nyagos")
+                  return nyagos.fields("sh bash zsh yash fish tcsh rc nyagos")
                 elseif cmd == "-h" then
                   return {}
                 end
