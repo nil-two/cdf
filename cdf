@@ -256,7 +256,7 @@ sub main {
                                 "-g[get the path so labeled]"
                                 "-l[list labels]"
                                 "-r[remove the label]"
-                                "-w[output the wrapper script (default: sh)]"
+                                "-w[output the wrapper script]"
                                 "-h[print usage]"
                                 )
                                 _values "mode" \$modes
