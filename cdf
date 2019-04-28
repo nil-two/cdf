@@ -20,7 +20,7 @@ usage:
   $cmd_name -h                   # print usage
 
 supported-shells:
-  sh, bash, fish, zsh, yash, tcsh, rc, nyagos
+  sh, bash, fish, zsh, yash, tcsh, rc, nyagos, xonsh
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
@@ -216,7 +216,7 @@ sub main {
                                 COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
                                 ;;
                             -w)
-                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish tcsh rc nyagos" -- "\$cur") )
+                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish tcsh rc nyagos xonsh" -- "\$cur") )
                                 ;;
                         esac
                         ;;
@@ -287,7 +287,7 @@ sub main {
                                 _values "label" \$(cdf -l)
                                 ;;
                             -w)
-                                _values "type" sh bash zsh yash fish tcsh rc nyagos
+                                _values "type" sh bash zsh yash fish tcsh rc nyagos xonsh
                                 ;;
                             -h)
                                 ;;
@@ -374,7 +374,7 @@ sub main {
             }
 
             function completion/cdf::completewrapper {
-              complete -- sh bash zsh yash fish tcsh rc nyagos
+              complete -- sh bash zsh yash fish tcsh rc nyagos xonsh
             }
             EOF
         } elsif ($type eq "fish") {
@@ -438,7 +438,7 @@ sub main {
                     case "-r"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
                     case "-w"
-                      printf "%s\\n" sh bash zsh yash fish tcsh rc nyagos | awk '{print \$0 "\\t" "Shell"}'
+                      printf "%s\\n" sh bash zsh yash fish tcsh rc nyagos xonsh | awk '{print \$0 "\\t" "Shell"}'
                   end
               end
             end
@@ -524,7 +524,7 @@ sub main {
                   command -- cdf -l\\\\
                   breaksw\\\\
                 case "-w":\\\\
-                  printf "%s\\n" sh bash zsh yash fish tcsh rc nyagos\\\\
+                  printf "%s\\n" sh bash zsh yash fish tcsh rc nyagos xonsh\\\\
                   breaksw\\\\
                 endsw\\\\
                 breaksw\\\\
@@ -598,12 +598,77 @@ sub main {
                 elseif cmd == "-r" then
                   return nyagos.fields(nyagos.eval("command -- cdf -l"))
                 elseif cmd == "-w" then
-                  return nyagos.fields("sh bash zsh yash fish tcsh rc nyagos")
+                  return nyagos.fields("sh bash zsh yash fish tcsh rc nyagos xonsh")
                 elseif cmd == "-h" then
                   return {}
                 end
               end
             end
+            EOF
+        } elsif ($type eq "xonsh") {
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            def __cdf(args):
+                if (len(args) == 0) or (len(args) == 1 and args[0] == "--") or (len(args) >= 1 and args[0].startswith("-") and args[0] != "--"):
+                    command -- cdf @(args)
+                    return
+
+                if (args[0] == "--"):
+                    args.pop(0)
+
+                nextpath = ''.join(!(command -- cdf -g @(args[0]))).strip()
+                if nextpath != "":
+                    cd @(nextpath)
+
+            def __complete_cdf(prefix, line, start, end, ctx):
+                """
+                Completion for "cdf"
+                """
+
+                from xonsh.completers.path import complete_dir
+
+                words = line[:end].split()
+                if line.endswith(" "):
+                    words.append("")
+
+                raw_comps = []
+                completed = False
+                comps     = None
+                lp        = None
+                if start != 0 and words[0] == "cdf":
+                    if len(words) == 2:
+                        if prefix.startswith("-"):
+                            raw_comps += ["--", "-a", "-g", "-l", "-r", "-w", "-h"]
+                        else:
+                            raw_comps += \$(command -- cdf -l).split()
+                    else:
+                        if words[1] == "--":
+                            raw_comps += \$(command -- cdf -l).split()
+                        elif words[1] == "-a":
+                            if len(words) == 3:
+                                raw_comps += \$(command -- cdf -l).split()
+                            else:
+                                comps, lp = complete_dir(prefix, line, start, end, ctx, True)
+                                completed = True
+                        elif words[1] == "-g":
+                            raw_comps += \$(command -- cdf -l).split()
+                        elif words[1] == "-r":
+                            raw_comps += \$(command -- cdf -l).split()
+                        elif words[1] == "-w":
+                            raw_comps += ["sh", "bash", "fish", "zsh", "yash", "tcsh", "rc", "nyagos", "xonsh"]
+
+                if completed:
+                    return comps, lp
+                else:
+                    comps = set(filter(lambda s: s.startswith(prefix), raw_comps))
+                    if (len(comps) == 1):
+                        comps = set(map(lambda s: s + " ", comps))
+                    lp = len(prefix)
+                    return comps, lp
+
+
+            aliases["cdf"] = __cdf
+            __xonsh__.completers.update(cdf=__complete_cdf)
+            __xonsh__.completers.move_to_end("cdf", last=False)
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
