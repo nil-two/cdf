@@ -9,6 +9,8 @@ readonly exitcode=$BATS_TEST_DIRNAME/../tmp/exitcode
 setup() {
   if [[ $BATS_TEST_NUMBER == 1 ]]; then
     mkdir -p -- "$tmpdir"
+    export PATH=$PATH:$(dirname "$BATS_TEST_DIRNAME")
+    export PATH=$(printf "%s\n" "$PATH" | awk '{gsub(":", "\n"); print}' | paste -sd:)
   fi
   export CDFFILE=$tmpdir/cdf.json
   printf "%s\n" "{}" > "$CDFFILE"

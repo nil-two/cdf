@@ -3,4 +3,4 @@
 all:
 
 test:
-	bats test
+	@bats test
