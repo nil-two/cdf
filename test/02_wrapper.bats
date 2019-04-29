@@ -85,7 +85,7 @@ check() {
   ! command -v rc > /dev/null && skip
   printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"
 
-  CDF=$cdf check rc -c 'ifs='"'"''"'"' eval `{cdf -w rc}; cdf usr; pwd'
+  CDF=$cdf check rc -c 'ifs='"'"''"'"' eval `{$CDF -w rc}; cdf usr; pwd'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]
 }
@@ -95,7 +95,6 @@ check() {
   printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"
 
   printf "%s\n" $'lua_e "loadstring(nyagos.eval(""%CDF% -w nyagos""))()"\ncdf usr\npwd' | CDF=$cdf nyagos
-  CDF=$cdf check rc -c 'ifs='"'"''"'"' eval `{cdf -w rc}; cdf usr; pwd'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]
 }
