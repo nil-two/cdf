@@ -20,7 +20,7 @@ usage:
   $cmd_name -h                   # print usage
 
 supported-shells:
-  sh, bash, fish, zsh, yash, tcsh, rc, nyagos, xonsh
+  sh, bash, zsh, yash, fish, tcsh, rc, nyagos, xonsh
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
