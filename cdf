@@ -665,10 +665,10 @@ sub main {
                     lp = len(prefix)
                     return comps, lp
 
-
             aliases["cdf"] = __cdf
-            __xonsh__.completers.update(cdf=__complete_cdf)
-            __xonsh__.completers.move_to_end("cdf", last=False)
+
+            if \$(completer list).find('cdf : Completion for "cdf"') == -1:
+                completer add cdf __complete_cdf
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
