@@ -3,6 +3,22 @@ cdf
 
 Chdir to the favorite directory.
 
+```
+$ pwd
+/home/usr/work/projects/first
+
+$ cdf -a first
+(save the path of current directory with label "first")
+
+$ cd
+$ pwd
+/home/user
+
+$ cdf first
+$ pwd
+/home/usr/work/projects/first
+```
+
 Usage
 -----
 
