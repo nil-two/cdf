@@ -38,7 +38,7 @@ supported-shells:
   sh, ksh, bash, zsh, yash, fish, tcsh, rc, nyagos, xonsh
 
 environment-variables:
-  CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
+  CDFFILE  # the registry path (default: ~/.config/cdf/cdf.json)
 ```
 
 Requirements

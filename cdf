@@ -25,7 +25,7 @@ supported-shells:
   @{[join ", ", @$supported_shells]}
 
 environment-variables:
-  CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
+  CDFFILE  # the registry path (default: ~/.config/cdf/cdf.json)
 EOF
 
 sub read_file {
