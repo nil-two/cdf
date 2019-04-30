@@ -343,125 +343,125 @@ sub main {
             }
 
             function completion/cdf {
-              CWORD=\${WORDS[#]}
+                CWORD=\${WORDS[#]}
 
-              case \$CWORD in
-                1)
-                  case \$TARGETWORD in
-                    -*) command -f completion/cdf::completecmd ;;
-                    *)  command -f completion/cdf::completelabel ;;
-                  esac
-                  ;;
-                *)
-                  cmd=\${WORDS[2]}
-                  case \$cmd in
-                    --)
-                      command -f completion/cdf::completelabel
-                      ;;
-                    -a)
-                      case \$CWORD in
-                        2) command -f completion/cdf::completelabel ;;
-                        *) complete -d ;;
-                      esac
-                      ;;
-                    -g)
-                      command -f completion/cdf::completelabel
-                      ;;
-                    -l)
-                      ;;
-                    -r)
-                      command -f completion/cdf::completelabel
-                      ;;
-                    -w)
-                      command -f completion/cdf::completewrapper
-                      ;;
-                  esac
-                  ;;
-              esac
+                case \$CWORD in
+                    1)
+                        case \$TARGETWORD in
+                            -*) command -f completion/cdf::completecmd ;;
+                            *)    command -f completion/cdf::completelabel ;;
+                        esac
+                        ;;
+                    *)
+                        cmd=\${WORDS[2]}
+                        case \$cmd in
+                            --)
+                                command -f completion/cdf::completelabel
+                                ;;
+                            -a)
+                                case \$CWORD in
+                                    2) command -f completion/cdf::completelabel ;;
+                                    *) complete -d ;;
+                                esac
+                                ;;
+                            -g)
+                                command -f completion/cdf::completelabel
+                                ;;
+                            -l)
+                                ;;
+                            -r)
+                                command -f completion/cdf::completelabel
+                                ;;
+                            -w)
+                                command -f completion/cdf::completewrapper
+                                ;;
+                        esac
+                        ;;
+                esac
             }
 
             function completion/cdf::completecmd {
-              complete -D "chdir to the path so labeled" -- --
-              complete -D "save the path with the label" -- -a
-              complete -D "get the path so labeled"      -- -g
-              complete -D "list labels"                  -- -l
-              complete -D "remove labels"                -- -r
-              complete -D "output the wrapper script"    -- -w
-              complete -D "print usage"                  -- -h
+                complete -D "chdir to the path so labeled" -- --
+                complete -D "save the path with the label" -- -a
+                complete -D "get the path so labeled"      -- -g
+                complete -D "list labels"                  -- -l
+                complete -D "remove labels"                -- -r
+                complete -D "output the wrapper script"    -- -w
+                complete -D "print usage"                  -- -h
             }
 
             function completion/cdf::completelabel {
-              complete -- \$(cdf -l)
+                complete -- \$(cdf -l)
             }
 
             function completion/cdf::completewrapper {
-              complete -- @$supported_shells
+                complete -- @$supported_shells
             }
             EOF
         } elsif ($type eq "fish") {
             print <<"            EOF" =~ s/^ {12}//gmr;
             function cdf
-              if test (count \$argv) -eq 0
-                command cdf
-                return
-              end
-              if test (count \$argv) -eq 1; and test \$argv[1] = "--"
-                command cdf
-                return
-              end
-              if test (count \$argv) -ge 1; and string match -q -r "^-" -- \$argv[1]; and test \$argv[1] != "--"
-                command cdf \$argv
-                return
-              end
+                if test (count \$argv) -eq 0
+                    command cdf
+                    return
+                end
+                if test (count \$argv) -eq 1; and test \$argv[1] = "--"
+                    command cdf
+                    return
+                end
+                if test (count \$argv) -ge 1; and string match -q -r "^-" -- \$argv[1]; and test \$argv[1] != "--"
+                    command cdf \$argv
+                    return
+                end
 
-              if test \$argv[1] = "--"
-                set argv \$argv[2..-1]
-              end
+                if test \$argv[1] = "--"
+                    set argv \$argv[2..-1]
+                end
 
-              set -l nextpath (command cdf -g \$argv[1])
-              if test -n "\$nextpath"
-                cd \$nextpath
-              end
+                set -l nextpath (command cdf -g \$argv[1])
+                if test -n "\$nextpath"
+                    cd \$nextpath
+                end
             end
 
             function __fish_cdf_complete
-              set -l cur (commandline -tc)
-              set -l words (commandline -pco)
-              set -l cword (count \$words)
-              switch \$cword
-                case 1
-                  switch \$cur
-                    case "-*"
-                      echo -es -- "--" "\\t" "Chdir to the path so labeled"
-                      echo -es -- "-a" "\\t" "Save the path with the label"
-                      echo -es -- "-g" "\\t" "Get the path so labeled"
-                      echo -es -- "-l" "\\t" "List labels"
-                      echo -es -- "-r" "\\t" "Remove Labels"
-                      echo -es -- "-w" "\\t" "Output the wrapper script"
-                      echo -es -- "-h" "\\t" "Print usage"
+                set -l cur (commandline -tc)
+                set -l words (commandline -pco)
+                set -l cword (count \$words)
+                switch \$cword
+                    case 1
+                        switch \$cur
+                            case "-*"
+                                echo -es -- "--" "\\t" "Chdir to the path so labeled"
+                                echo -es -- "-a" "\\t" "Save the path with the label"
+                                echo -es -- "-g" "\\t" "Get the path so labeled"
+                                echo -es -- "-l" "\\t" "List labels"
+                                echo -es -- "-r" "\\t" "Remove Labels"
+                                echo -es -- "-w" "\\t" "Output the wrapper script"
+                                echo -es -- "-h" "\\t" "Print usage"
+                            case "*"
+                                cdf -l | awk '{print \$0 "\\t" "Label"}'
+                        end
                     case "*"
-                      cdf -l | awk '{print \$0 "\\t" "Label"}'
-                  end
-                case "*"
-                  set -l cmd \$words[2]
-                  switch \$cmd
-                    case "--"
-                      cdf -l | awk '{print \$0 "\\t" "Label"}'
-                    case "-a"
-                      switch \$cword
-                        case 2
-                          cdf -l | awk '{print \$0 "\\t" "Label"}'
-                        case 3
-                          __fish_complete_directories \$cur
-                      end
-                    case "-g"
-                      cdf -l | awk '{print \$0 "\\t" "Label"}'
-                    case "-r"
-                      cdf -l | awk '{print \$0 "\\t" "Label"}'
-                    case "-w"
-                      printf "%s\\n" @$supported_shells | awk '{print \$0 "\\t" "Shell"}'
-                  end
-              end
+                        set -l cmd \$words[2]
+                        switch \$cmd
+                            case "--"
+                                cdf -l | awk '{print \$0 "\\t" "Label"}'
+                            case "-a"
+                                switch \$cword
+                                    case 2
+                                        cdf -l | awk '{print \$0 "\\t" "Label"}'
+                                    case 3
+                                        __fish_complete_directories \$cur
+                                end
+                            case "-g"
+                                cdf -l | awk '{print \$0 "\\t" "Label"}'
+                            case "-r"
+                                cdf -l | awk '{print \$0 "\\t" "Label"}'
+                            case "-w"
+                                printf "%s\\n" @$supported_shells | awk '{print \$0 "\\t" "Shell"}'
+                        end
+                end
             end
             complete -c cdf -f -a "(__fish_cdf_complete)"
             EOF
@@ -473,28 +473,28 @@ sub main {
             set __cdfnextpath;\\\\
             eval '"'"'\\\\
             source /dev/stdin <<__BODY__\\\\
-              if (\\\$#__cdfargs == 0) then\\\\
-                command -- cdf\\\\
-                exit\\\\
-              endif\\\\
-              if (\\\$#__cdfargs == 1 && \\\$__cdfargs[1]:q == "--") then\\\\
-                command -- cdf\\\\
-                exit\\\\
-              endif\\\\
-              if (\\\$#__cdfargs >= 1 && \\\$__cdfargs[1]:q =~ -* && \\\$__cdfargs[1]:q != "--") then\\\\
-                command -- cdf \\\$__cdfargs:q\\\\
-                exit\\\\
-              endif\\\\
-              \\\\
-              if (\\\$__cdfargs[1]:q == "--") then\\\\
-                shift __cdfargs\\\\
-              endif\\\\
-              \\\\
-              command -- cdf -g \\\$__cdfargs[1]:q | sed \${__cdfq}s/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}/g; s/\\\\\\\\\\!/\\\\\\\\\\\\\\\\\\!/g; s/\\\$/\\\\\\\\/; 1s/^/\${__cdfq}"\${__cdfq}"\${__cdfq}/; \\\$s/\\\\\\\\\\\$/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq} | sed \${__cdfq}1s/^/set __cdfnextpath=/\${__cdfq} | source /dev/stdin\\\\
-              true\\\\
-              if (\\\$__cdfnextpath:q != "") then\\\\
-                cd \\\$__cdfnextpath:q\\\\
-              endif\\\\
+                if (\\\$#__cdfargs == 0) then\\\\
+                    command -- cdf\\\\
+                    exit\\\\
+                endif\\\\
+                if (\\\$#__cdfargs == 1 && \\\$__cdfargs[1]:q == "--") then\\\\
+                    command -- cdf\\\\
+                    exit\\\\
+                endif\\\\
+                if (\\\$#__cdfargs >= 1 && \\\$__cdfargs[1]:q =~ -* && \\\$__cdfargs[1]:q != "--") then\\\\
+                    command -- cdf \\\$__cdfargs:q\\\\
+                    exit\\\\
+                endif\\\\
+                \\\\
+                if (\\\$__cdfargs[1]:q == "--") then\\\\
+                    shift __cdfargs\\\\
+                endif\\\\
+                \\\\
+                command -- cdf -g \\\$__cdfargs[1]:q | sed \${__cdfq}s/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}/g; s/\\\\\\\\\\!/\\\\\\\\\\\\\\\\\\!/g; s/\\\$/\\\\\\\\/; 1s/^/\${__cdfq}"\${__cdfq}"\${__cdfq}/; \\\$s/\\\\\\\\\\\$/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq} | sed \${__cdfq}1s/^/set __cdfnextpath=/\${__cdfq} | source /dev/stdin\\\\
+                true\\\\
+                if (\\\$__cdfnextpath:q != "") then\\\\
+                    cd \\\$__cdfnextpath:q\\\\
+                endif\\\\
             __BODY__\\\\
             true\\\\
             '"'"';\\\\
@@ -508,48 +508,48 @@ sub main {
             set __cdfq='"'"''"'"'"'"'"'"'"'"''"'"';\\\\
             eval '"'"'\\\\
             source /dev/stdin <<__BODY__\\\\
-              if (\\\$COMMAND_LINE:q =~ "* ") then\\\\
-                set __cdfcompleteargs=(\\\$__cdfcompleteargs:q "")\\\\
-              endif\\\\
-              \\\\
-              switch (\\\$#__cdfcompleteargs)\\\\
-              case 2:\\\\
-                switch (\\\$__cdfcompleteargs[2]:q)\\\\
-                case "-*":\\\\
-                  printf "%s\\n" -- -a -g -l -r -w -h\\\\
-                  breaksw\\\\
+                if (\\\$COMMAND_LINE:q =~ "* ") then\\\\
+                    set __cdfcompleteargs=(\\\$__cdfcompleteargs:q "")\\\\
+                endif\\\\
+                \\\\
+                switch (\\\$#__cdfcompleteargs)\\\\
+                case 2:\\\\
+                    switch (\\\$__cdfcompleteargs[2]:q)\\\\
+                    case "-*":\\\\
+                        printf "%s\\n" -- -a -g -l -r -w -h\\\\
+                        breaksw\\\\
+                    default:\\\\
+                        command -- cdf -l\\\\
+                        breaksw\\\\
+                    endsw\\\\
+                    breaksw\\\\
                 default:\\\\
-                  command -- cdf -l\\\\
-                  breaksw\\\\
-                endsw\\\\
-                breaksw\\\\
-              default:\\\\
-                switch (\\\$__cdfcompleteargs[2]:q)\\\\
-                case "--":\\\\
-                  command -- cdf -l\\\\
-                  breaksw\\\\
-                case "-a":\\\\
-                  switch (\\\$#__cdfcompleteargs)\\\\
-                  case 3:\\\\
-                    command -- cdf -l\\\\
+                    switch (\\\$__cdfcompleteargs[2]:q)\\\\
+                    case "--":\\\\
+                        command -- cdf -l\\\\
+                        breaksw\\\\
+                    case "-a":\\\\
+                        switch (\\\$#__cdfcompleteargs)\\\\
+                        case 3:\\\\
+                            command -- cdf -l\\\\
+                            breaksw\\\\
+                        default:\\\\
+                            sh -c \${__cdfq}ls -dp -- "\\\$1"* 2> /dev/null\${__cdfq} -- \\\$__cdfcompleteargs[\\\$#__cdfcompleteargs]:q | awk \${__cdfq}/\\/\\\$/{print;print}\${__cdfq}\\\\
+                            breaksw\\\\
+                        endsw\\\\
+                        breaksw\\\\
+                    case "-g":\\\\
+                        command -- cdf -l\\\\
+                        breaksw\\\\
+                    case "-r":\\\\
+                        command -- cdf -l\\\\
+                        breaksw\\\\
+                    case "-w":\\\\
+                        printf "%s\\n" @$supported_shells\\\\
+                        breaksw\\\\
+                    endsw\\\\
                     breaksw\\\\
-                  default:\\\\
-                    sh -c \${__cdfq}ls -dp -- "\\\$1"* 2> /dev/null\${__cdfq} -- \\\$__cdfcompleteargs[\\\$#__cdfcompleteargs]:q | awk \${__cdfq}/\\/\\\$/{print;print}\${__cdfq}\\\\
-                    breaksw\\\\
-                  endsw\\\\
-                  breaksw\\\\
-                case "-g":\\\\
-                  command -- cdf -l\\\\
-                  breaksw\\\\
-                case "-r":\\\\
-                  command -- cdf -l\\\\
-                  breaksw\\\\
-                case "-w":\\\\
-                  printf "%s\\n" @$supported_shells\\\\
-                  breaksw\\\\
                 endsw\\\\
-                breaksw\\\\
-              endsw\\\\
             __BODY__\\\\
             true\\\\
             '"'"';\\\\
@@ -561,69 +561,69 @@ sub main {
         } elsif ($type eq "rc") {
             print <<"            EOF" =~ s/^ {12}//gmr;
             fn cdf {
-              if ({~ \$#* 0} || {~ \$#* 1 && ~ \$1 '--'} || {test \$#* -ge 1 && ~ \$1 -* && ! ~ \$1 '--'}) {
-                command -- cdf \$*
-                return
-              }
+                if ({~ \$#* 0} || {~ \$#* 1 && ~ \$1 '--'} || {test \$#* -ge 1 && ~ \$1 -* && ! ~ \$1 '--'}) {
+                    command -- cdf \$*
+                    return
+                }
 
-              if (~ \$1 '--') {
-                shift
-              }
+                if (~ \$1 '--') {
+                    shift
+                }
 
-              ifs='' nextpath=`{command -- cdf -g \$1 | awk 'NR==1{l=\$0;while(getline){print l;l=\$0};printf"%s",l}'} if (test -n \$nextpath) {
-                cd \$nextpath
-              }
+                ifs='' nextpath=`{command -- cdf -g \$1 | awk 'NR==1{l=\$0;while(getline){print l;l=\$0};printf"%s",l}'} if (test -n \$nextpath) {
+                    cd \$nextpath
+                }
             }
             EOF
         } elsif ($type eq "nyagos") {
             print <<"            EOF" =~ s/^ {12}//gmr;
             nyagos.alias.cdf = function(args)
-              if (#args == 0) or (#args == 1 and args[1] == "--") or (#args >= 1 and args[1]:match([[^-]]) and args[1] ~= "--") then
-                nyagos.exec({"command", "--", "cdf", unpack(args)})
-                return
-              end
+                if (#args == 0) or (#args == 1 and args[1] == "--") or (#args >= 1 and args[1]:match([[^-]]) and args[1] ~= "--") then
+                    nyagos.exec({"command", "--", "cdf", unpack(args)})
+                    return
+                end
 
-              if args[1] == "--" then
-                table.remove(args, 1)
-              end
+                if args[1] == "--" then
+                    table.remove(args, 1)
+                end
 
-              local label        = args[1]
-              local quoted_label = label:gsub([[']], [['"'"']]):gsub([[^]], [[']]):gsub([[\$]], [[']])
-              local next_path    = nyagos.eval("command -- cdf -g " .. quoted_label)
-              if next_path ~= nil and next_path ~= "" then
-                nyagos.chdir(next_path)
-              end
+                local label                = args[1]
+                local quoted_label = label:gsub([[']], [['"'"']]):gsub([[^]], [[']]):gsub([[\$]], [[']])
+                local next_path        = nyagos.eval("command -- cdf -g " .. quoted_label)
+                if next_path ~= nil and next_path ~= "" then
+                    nyagos.chdir(next_path)
+                end
             end
             nyagos.complete_for.cdf = function(args)
-              local cur = args[#args]
-              if #args == 2 then
-                if cur:match([[^-]]) then
-                  return nyagos.fields("-- -a -g -l -r -w -h")
+                local cur = args[#args]
+                if #args == 2 then
+                    if cur:match([[^-]]) then
+                        return nyagos.fields("-- -a -g -l -r -w -h")
+                    else
+                        return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                    end
                 else
-                  return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                    local cmd = args[2]
+                    if cmd == "--" then
+                        return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                    elseif cmd == "-a" then
+                        if #args == 3 then
+                            return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                        else
+                            return nil
+                        end
+                    elseif cmd == "-g" then
+                        return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                    elseif cmd == "-l" then
+                        return {}
+                    elseif cmd == "-r" then
+                        return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                    elseif cmd == "-w" then
+                        return nyagos.fields("@$supported_shells")
+                    elseif cmd == "-h" then
+                        return {}
+                    end
                 end
-              else
-                local cmd = args[2]
-                if cmd == "--" then
-                  return nyagos.fields(nyagos.eval("command -- cdf -l"))
-                elseif cmd == "-a" then
-                  if #args == 3 then
-                    return nyagos.fields(nyagos.eval("command -- cdf -l"))
-                  else
-                    return nil
-                  end
-                elseif cmd == "-g" then
-                  return nyagos.fields(nyagos.eval("command -- cdf -l"))
-                elseif cmd == "-l" then
-                  return {}
-                elseif cmd == "-r" then
-                  return nyagos.fields(nyagos.eval("command -- cdf -l"))
-                elseif cmd == "-w" then
-                  return nyagos.fields("@$supported_shells")
-                elseif cmd == "-h" then
-                  return {}
-                end
-              end
             end
             EOF
         } elsif ($type eq "xonsh") {
