@@ -8,7 +8,6 @@ Chdir to the favorite directory.
 ```
 $ pwd
 /home/usr/work/projects/first
-
 $ cdf -a first
 (save the path of current directory with label "first")
 
@@ -17,6 +16,7 @@ $ pwd
 /home/user
 
 $ cdf first
+(chdir to the directory labeled "first")
 $ pwd
 /home/usr/work/projects/first
 ```
@@ -51,12 +51,11 @@ Installation
 
 1. Copy `cdf` into your `$PATH`.
 2. Make `cdf` executable.
-3. Add `eval "$(cdf -w)"` to your shell's rc file.
-
-If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows:
+3. Add following config to your shell's rc file.
 
 | Shell  |                                                         |
 |--------|---------------------------------------------------------|
+| sh     | eval "$(cdf -w)"                                        |
 | ksh    | eval "$(cdf -w ksh)"                                    |
 | bash   | eval "$(cdf -w bash)"                                   |
 | zsh    | eval "$(cdf -w zsh)"                                    |
