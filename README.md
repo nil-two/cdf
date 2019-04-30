@@ -30,7 +30,7 @@ usage:
   cdf -a <label> [<path>]  # save the path with the label
   cdf -g <label>           # get the path so labeled
   cdf -l                   # list labels
-  cdf -r <label>           # remove the label
+  cdf -r <label(s)>        # remove labels
   cdf -w [<shell>]         # output the wrapper script (default: sh)
   cdf -h                   # print usage
 
@@ -129,16 +129,16 @@ home
 (If only the path labeled home and the path labeled go exist)
 ```
 
-### cdf -r \<label\>
+### cdf -r \<label(s)\>
 
-Remove the label.
+Remove labels.
 
 ```
 $ cdf -r home
 (Remove the path labeled home)
 
-$ cdf -r go
-(Remove the path labeled go)
+$ cdf -r go go2
+(Remove the pathes labeled go and go2)
 ```
 
 ### cdf -w [\<shell\>]

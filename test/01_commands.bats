@@ -123,14 +123,20 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -r: remove the label' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
+@test 'cdf -r: remove labels' {
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\",\"ccc\":\"three\"}" > "$CDFFILE"
 
-  check "$cdf" -r bbb
+  check "$cdf" -r aaa bbb
   [[ $(cat "$exitcode") == 0 ]]
+
+  check "$cdf" -g aaa
+  [[ $(cat "$exitcode") == 1 ]]
 
   check "$cdf" -g bbb
   [[ $(cat "$exitcode") == 1 ]]
+
+  check "$cdf" -g ccc
+  [[ $(cat "$exitcode") == 0 ]]
 }
 
 @test 'cdf -r: remove the label even if the label doesn'"'"'t exist' {

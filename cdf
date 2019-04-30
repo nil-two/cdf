@@ -17,7 +17,7 @@ usage:
   $cmd_name -a <label> [<path>]  # save the path with the label
   $cmd_name -g <label>           # get the path so labeled
   $cmd_name -l                   # list labels
-  $cmd_name -r <label>           # remove the label
+  $cmd_name -r <label(s)>        # remove labels
   $cmd_name -w [<shell>]         # output the wrapper script (default: sh)
   $cmd_name -h                   # print usage
 
@@ -132,11 +132,13 @@ sub main {
             exit 2;
         }
 
-        my $label = $ARGV[0];
+        my $labels = [@ARGV];
 
         my $pathes = decode_json(read_file($CDFFILE));
 
-        delete $pathes->{$label};
+        for my $label (@$labels) {
+            delete $pathes->{$label};
+        }
 
         write_file($CDFFILE, encode_json($pathes) . "\n");
 
@@ -274,7 +276,7 @@ sub main {
                                 "-a[save the path with the label]"
                                 "-g[get the path so labeled]"
                                 "-l[list labels]"
-                                "-r[remove the label]"
+                                "-r[remove labels]"
                                 "-w[output the wrapper script]"
                                 "-h[print usage]"
                                 )
@@ -383,7 +385,7 @@ sub main {
               complete -D "save the path with the label" -- -a
               complete -D "get the path so labeled"      -- -g
               complete -D "list labels"                  -- -l
-              complete -D "remove the label"             -- -r
+              complete -D "remove labels"                -- -r
               complete -D "output the wrapper script"    -- -w
               complete -D "print usage"                  -- -h
             }
@@ -434,7 +436,7 @@ sub main {
                       echo -es -- "-a" "\\t" "Save the path with the label"
                       echo -es -- "-g" "\\t" "Get the path so labeled"
                       echo -es -- "-l" "\\t" "List labels"
-                      echo -es -- "-r" "\\t" "Remove the label"
+                      echo -es -- "-r" "\\t" "Remove Labels"
                       echo -es -- "-w" "\\t" "Output the wrapper script"
                       echo -es -- "-h" "\\t" "Print usage"
                     case "*"
