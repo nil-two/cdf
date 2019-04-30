@@ -1,3 +1,9 @@
+### v2.5.0 - 2019-04-28
+
+- Allow removing multipe labels at once.
+- Stop accessing to \_\_xonsh\_\_ in xonsh-wrapper.
+- Support ksh.
+
 ### v2.4.0 - 2019-04-28
 
 - Support xonsh.
