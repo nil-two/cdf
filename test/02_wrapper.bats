@@ -38,6 +38,15 @@ check() {
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
+@test 'cdf supports ksh' {
+  ! command -v ksh > /dev/null && skip
+  printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"
+
+  CDF="$cdf" check ksh -c 'eval "$("$CDF" -w); cdf usr; pwd"'
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "/usr" ]]
+}
+
 @test 'cdf supports bash' {
   ! command -v bash > /dev/null && skip
   printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"

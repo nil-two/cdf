@@ -35,7 +35,7 @@ usage:
   cdf -h                   # print usage
 
 supported-shells:
-  sh, bash, zsh, yash, fish, tcsh, rc, nyagos, xonsh
+  sh, ksh, bash, zsh, yash, fish, tcsh, rc, nyagos, xonsh
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
@@ -57,6 +57,7 @@ If you want to enable auto-completions, rewrite `eval "$(cdf -w)"` to as follows
 
 | Shell  |                                                         |
 |--------|---------------------------------------------------------|
+| ksh    | eval "$(cdf -w ksh)"                                    |
 | bash   | eval "$(cdf -w bash)"                                   |
 | zsh    | eval "$(cdf -w zsh)"                                    |
 | yash   | eval "$(cdf -w yash)"                                   |
@@ -149,6 +150,7 @@ If shell specified, it outputs wrapper script optimized for the shell.
 Supported shells are as follows:
 
 - sh
+- ksh
 - bash
 - zsh
 - yash
@@ -161,6 +163,9 @@ Supported shells are as follows:
 ```
 $ eval "$(cdf -w)"
 (Enable the shell integration for the shell compatible with Bourne Shell)
+
+$ eval "$(cdf -w ksh)"
+(Enable the shell integration for ksh)
 
 $ eval "$(cdf -w bash)"
 (Enable the shell integration for bash)

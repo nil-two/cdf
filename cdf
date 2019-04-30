@@ -8,7 +8,7 @@ use autouse "JSON::PP" => qw(encode_json decode_json);
 
 my $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
 
-my $supported_shells = [qw(sh bash zsh yash fish tcsh rc nyagos xonsh)];
+my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xonsh)];
 
 my $cmd_name = $0 =~ s/.*\///r;
 my $usage = <<EOF;
@@ -165,6 +165,23 @@ sub main {
                 set -- "\$(command -- cdf -g "\$1")"
                 if [ -n "\$1" ]; then
                     cd "\$1" || return
+                fi
+            }
+            EOF
+        } elsif ($type eq "ksh") {
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            cdf() {
+                if [[ \$# -eq 0 || ( \$# -eq 1 && \$1 = -- ) || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
+                    command -- cdf "\$@"
+                fi
+
+                if [[ \$1 = -- ]]; then
+                    shift
+                fi
+
+                set -- "\$(command -- cdf -g "\$1")"
+                if [[ -n \$1 ]]; then
+                    cd "\$1"
                 fi
             }
             EOF
