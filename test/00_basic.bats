@@ -41,10 +41,10 @@ check() {
   [[ $(cat "$stderr") =~ ^usage ]]
 }
 
-@test 'cdf: print usage if unknown command passed' {
+@test 'cdf: output message to use "cdf -h" if unknown command passed' {
   check "$cdf" --vim
   [[ $(cat "$exitcode") == 2 ]]
-  [[ $(cat "$stderr") =~ ^usage ]]
+  [[ $(cat "$stderr") != "" ]]
 }
 
 @test 'cdf: outputs guidance to use "cdf -w" if label passed' {

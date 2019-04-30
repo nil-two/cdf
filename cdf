@@ -681,7 +681,8 @@ sub main {
 
     } else {
 
-        print STDERR $usage;
+        print STDERR "$cmd_name: unrecognized command '$mode'\n";
+        print STDERR "Try '$cmd_name -h' for more information.\n";
         exit 2;
 
     }
