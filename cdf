@@ -8,6 +8,8 @@ use autouse "JSON::PP" => qw(encode_json decode_json);
 
 my $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
 
+my $supported_shells = [qw(sh bash zsh yash fish tcsh rc nyagos xonsh)];
+
 my $cmd_name = $0 =~ s/.*\///r;
 my $usage = <<EOF;
 usage:
@@ -20,7 +22,7 @@ usage:
   $cmd_name -h                   # print usage
 
 supported-shells:
-  sh, bash, zsh, yash, fish, tcsh, rc, nyagos, xonsh
+  @{[join ", ", @$supported_shells]}
 
 environment-variables:
   CDFFILE   # the registry path (default: ~/.config/cdf/cdf.json)
@@ -216,7 +218,7 @@ sub main {
                                 COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
                                 ;;
                             -w)
-                                COMPREPLY=( \$(compgen -W "sh bash zsh yash fish tcsh rc nyagos xonsh" -- "\$cur") )
+                                COMPREPLY=( \$(compgen -W "@$supported_shells" -- "\$cur") )
                                 ;;
                         esac
                         ;;
@@ -287,7 +289,7 @@ sub main {
                                 _values "label" \$(cdf -l)
                                 ;;
                             -w)
-                                _values "type" sh bash zsh yash fish tcsh rc nyagos xonsh
+                                _values "type" @$supported_shells
                                 ;;
                             -h)
                                 ;;
@@ -374,7 +376,7 @@ sub main {
             }
 
             function completion/cdf::completewrapper {
-              complete -- sh bash zsh yash fish tcsh rc nyagos xonsh
+              complete -- @$supported_shells
             }
             EOF
         } elsif ($type eq "fish") {
@@ -438,7 +440,7 @@ sub main {
                     case "-r"
                       cdf -l | awk '{print \$0 "\\t" "Label"}'
                     case "-w"
-                      printf "%s\\n" sh bash zsh yash fish tcsh rc nyagos xonsh | awk '{print \$0 "\\t" "Shell"}'
+                      printf "%s\\n" @$supported_shells | awk '{print \$0 "\\t" "Shell"}'
                   end
               end
             end
@@ -524,7 +526,7 @@ sub main {
                   command -- cdf -l\\\\
                   breaksw\\\\
                 case "-w":\\\\
-                  printf "%s\\n" sh bash zsh yash fish tcsh rc nyagos xonsh\\\\
+                  printf "%s\\n" @$supported_shells\\\\
                   breaksw\\\\
                 endsw\\\\
                 breaksw\\\\
@@ -598,7 +600,7 @@ sub main {
                 elseif cmd == "-r" then
                   return nyagos.fields(nyagos.eval("command -- cdf -l"))
                 elseif cmd == "-w" then
-                  return nyagos.fields("sh bash zsh yash fish tcsh rc nyagos xonsh")
+                  return nyagos.fields("@$supported_shells")
                 elseif cmd == "-h" then
                   return {}
                 end
@@ -654,7 +656,7 @@ sub main {
                         elif words[1] == "-r":
                             raw_comps += \$(command -- cdf -l).split()
                         elif words[1] == "-w":
-                            raw_comps += ["sh", "bash", "fish", "zsh", "yash", "tcsh", "rc", "nyagos", "xonsh"]
+                            raw_comps += [@{[join ", ", map { "\"$_\"" } @$supported_shells]}]
 
                 if completed:
                     return comps, lp
