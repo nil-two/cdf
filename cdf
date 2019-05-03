@@ -2,15 +2,25 @@
 use strict;
 use warnings;
 use autouse "Cwd" => qw(abs_path getcwd);
-use autouse "File::Basename" => qw(dirname);
+use autouse "File::Basename" => qw(basename dirname);
 use autouse "File::Path" => qw(make_path);
 use autouse "JSON::PP" => qw(encode_json decode_json);
 
-my $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
+my $CDFFILE;
+if ($^O eq "MSWin32") {
+    $CDFFILE = $ENV{CDFFILE} // "$ENV{homepath}/.config/cdf/cdf.json";
+} else {
+    $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
+}
 
-my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xonsh)];
+my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xonsh cmd)];
 
-my $cmd_name = $0 =~ s/.*\///r;
+my $cmd_name;
+if ($^O eq "MSWin32") {
+    $cmd_name = basename($0);
+} else {
+    $cmd_name = $0 =~ s/.*\///r;
+}
 my $usage = <<EOF;
 usage:
   $cmd_name [--] <label>         # chdir to the path so labeled
@@ -690,6 +700,47 @@ sub main {
 
             if \$(completer list).find('cdf : Completion for "cdf"') == -1:
                 completer add cdf __complete_cdf
+            EOF
+        } elsif ($type eq "cmd") {
+            my $cdf_bin_path = abs_path($0);
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            \@echo off
+
+            setlocal enabledelayedexpansion
+
+            set n_args=0
+            for %%_ in (%*) do set /A n_args+=1
+            if %n_args% EQU 0 (
+                perl $cdf_bin_path
+                exit /b !ERRORLEVEL!
+            )
+
+            set mode=%1
+            if %n_args% EQU 1 (if %mode% EQU -- (
+                perl $cdf_bin_path
+                exit /b !ERRORLEVEL!
+            ))
+            if %n_args% GEQ 1 (if %mode:~0,1% EQU - (if %mode% NEQ -- (
+                perl $cdf_bin_path %*
+                exit /b !ERRORLEVEL!
+            )))
+
+            if %mode% EQU -- (
+                shift
+            )
+
+            set nextpath=""
+            for /F "usebackq delims=" %%v in (`perl $cdf_bin_path -g %1`) do set nextpath=%%v
+            if "%nextpath%" EQU """" (
+                exit /b 1
+            )
+
+            for /F "delims=" %%v in ("%nextpath%") do (
+                endlocal
+                set "__cdfnextpath=%%v"
+            )
+            cd %__cdfnextpath%
+            set __cdfnextpath=
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
