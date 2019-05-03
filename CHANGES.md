@@ -1,3 +1,8 @@
+### v2.6.0 - 2019-05-03
+
+- Support cmd.
+- Support powershell.
+
 ### v2.5.0 - 2019-04-28
 
 - Allow removing multipe labels at once.
