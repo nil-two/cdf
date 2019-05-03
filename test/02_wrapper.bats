@@ -119,4 +119,13 @@ check() {
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
+@test 'cdf supports powershell' {
+  ! command -v pwsh > /dev/null && skip
+  printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"
+
+  CDF=/home/nil2/bin/cdf pwsh -Command 'Invoke-Expression (@(& $env:CDF "-w" powershell) -join "`n"); cdf fn; Write-Host @(pwd)'
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "/usr" ]]
+}
+
 # vim: ft=sh

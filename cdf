@@ -13,7 +13,7 @@ if ($^O eq "MSWin32") {
     $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
 }
 
-my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xonsh cmd)];
+my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xonsh cmd powershell)];
 
 my $cmd_name;
 if ($^O eq "MSWin32") {
@@ -741,6 +741,76 @@ sub main {
             )
             cd %__cdfnextpath%
             set __cdfnextpath=
+            EOF
+        } elsif ($type eq "powershell") {
+            my $cdf_bin_path = abs_path($0);
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            function cdf {
+                if (\$args.Length -eq 0) {
+                    command -- cdf
+                    return
+                }
+                if (\$args.Length -eq 1 -and ([string]\$args[0]) -eq "--") {
+                    command -- cdf
+                    return
+                }
+                if (\$args.Length -ge 1 -and ([string]\$args[0]).StartsWith("-") -and ([string]\$args[0]) -ne "--") {
+                    command -- cdf \$args
+                    return
+                }
+
+                if (\$args[0] -eq "--") {
+                    \$args = \$args[1 .. -1]
+                }
+
+                \$nextpath = @(command -- cdf -g \$args[0])
+                if (\$nextpath.Length -ge 1) {
+                    cd ([string]\$nextpath)
+                }
+            }
+
+            Register-ArgumentCompleter -Native -CommandName cdf -ScriptBlock {
+                param(\$commandName, \$wordToComplete, \$cursorPosition)
+
+                if (\$wordToComplete.ToString().Length -ne \$cursorPosition) {
+                    \$line = \$wordToComplete.ToString().Substring(0, \$cursorPosition-1)
+                    \$words = \$line.Split(" ") + ""
+                    \$cword = \$words.Length
+                    \$cur     = \$words[\$cword-1]
+                } else {
+                    \$line = \$wordToComplete.ToString().Substring(0, \$cursorPosition)
+                    \$words = \$line.Split(" ")
+                    \$cword = \$words.Length
+                    \$cur     = \$words[\$cword-1]
+                }
+
+                \$comps = @()
+                if (\$words.Length -eq 2) {
+                    if (\$cur.StartsWith("-")) {
+                        \$comps = @("--", "-a", "-g", "-l", "-r", "-w", "-h")
+                    } else {
+                        \$comps = @(command -- cdf -l)
+                    }
+                } elseif (\$words.Length -ge 3) {
+                    if (\$words[1] -eq "--") {
+                        \$comps = @(command -- cdf -l)
+                    } elseif (\$words[1] -eq "-a") {
+                        if (\$words.Length -eq 3) {
+                            \$comps = @(command -- cdf -l)
+                        }
+                    } elseif (\$words[1] -eq "-g") {
+                        \$comps = @(command -- cdf -l)
+                    } elseif (\$words[1] -eq "-r") {
+                        \$comps = @(command -- cdf -l)
+                    } elseif (\$words[1] -eq "-w") {
+                        \$comps = @(@{[join ", ", map { "\"$_\"" } @$supported_shells]})
+                    }
+                }
+
+                \$comps | Where { \$_ -like "\${cur}*" } | ForEach-Object {
+                    [System.Management.Automation.CompletionResult]::new(\$_, \$_, "ParameterValue", \$_)
+                }
+            }
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
