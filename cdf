@@ -478,55 +478,52 @@ sub main {
         } elsif ($type eq "tcsh") {
             print <<"            EOF" =~ s/^ {12}//gmr;
             alias cdf '\\\\
-            set __cdfq='"'"''"'"'"'"'"'"'"'"''"'"';\\\\
-            set __cdfargs=(\\!:*);\\\\
-            set __cdfnextpath;\\\\
+            set __fn_argv=(\\!:*);\\\\
             eval '"'"'\\\\
-            source /dev/stdin <<__BODY__\\\\
-                if (\\\$#__cdfargs == 0) then\\\\
+            source /dev/stdin \$__fn_argv:q <<__FN_BODY__\\\\
+                if (\\\$#argv == 0) then\\\\
                     command -- cdf\\\\
                     exit\\\\
                 endif\\\\
-                if (\\\$#__cdfargs == 1 && \\\$__cdfargs[1]:q == "--") then\\\\
+                if (\\\$#argv == 1 && \\\$argv[1]:q == --) then\\\\
                     command -- cdf\\\\
                     exit\\\\
                 endif\\\\
-                if (\\\$#__cdfargs >= 1 && \\\$__cdfargs[1]:q =~ -* && \\\$__cdfargs[1]:q != "--") then\\\\
-                    command -- cdf \\\$__cdfargs:q\\\\
+                if (\\\$#argv >= 1 && \\\$argv[1]:q =~ -* && \\\$argv[1]:q \\\\!= --) then\\\\
+                    command -- cdf \\\$argv:q\\\\
                     exit\\\\
                 endif\\\\
                 \\\\
-                if (\\\$__cdfargs[1]:q == "--") then\\\\
-                    shift __cdfargs\\\\
+                if (\\\$argv[1]:q == '"'"'"'"'"'"'"'"'--'"'"'"'"'"'"'"'"') then\\\\
+                    shift\\\\
                 endif\\\\
                 \\\\
-                command -- cdf -g \\\$__cdfargs[1]:q | sed \${__cdfq}s/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}"\${__cdfq}/g; s/\\\\\\\\\\!/\\\\\\\\\\\\\\\\\\!/g; s/\\\$/\\\\\\\\/; 1s/^/\${__cdfq}"\${__cdfq}"\${__cdfq}/; \\\$s/\\\\\\\\\\\$/\${__cdfq}"\${__cdfq}"\${__cdfq}/\${__cdfq} | sed \${__cdfq}1s/^/set __cdfnextpath=/\${__cdfq} | source /dev/stdin\\\\
+                set __cdfnextpath=\\\\
+                command cdf -g \\\$argv[1]:q | sed '"'"'"'"'"'"'"'"'s/'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'/'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'/g; s/\\\\\\\\!/\\\\\\\\\\\\\\\\!/g; s/\\\$/\\\\\\\\/; 1s/^/set __cdfnextpath='"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'/; \\\$s/\\\\\\\\\\\$/'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'"'/'"'"'"'"'"'"'"'"' | source /dev/stdin\\\\
                 true\\\\
-                if (\\\$__cdfnextpath:q != "") then\\\\
+                if (\\\$__cdfnextpath:q \\\\!= '"'"'"'"'"'"'"'"''"'"'"'"'"'"'"'"') then\\\\
                     cd \\\$__cdfnextpath:q\\\\
                 endif\\\\
-            __BODY__\\\\
-            true\\\\
-            '"'"';\\\\
-            unset __cdfargs;\\\\
-            unset __cdfnextpath;\\\\
-            unset __cdfq;\\\\
+                unset __cdfnextpath\\\\
+            __FN_BODY__\\\\
+            '"'"'\\\\
+            unset __fn_argv;\\\\
             '
 
             alias __cdfcomplete '\\\\
-            set __cdfcompleteargs=(\$COMMAND_LINE);\\\\
-            set __cdfq='"'"''"'"'"'"'"'"'"'"''"'"';\\\\
+            set __fn_argv=(\\!:*);\\\\
             eval '"'"'\\\\
-            source /dev/stdin <<__BODY__\\\\
-                if (\\\$COMMAND_LINE:q =~ "* ") then\\\\
-                    set __cdfcompleteargs=(\\\$__cdfcompleteargs:q "")\\\\
+            source /dev/stdin \$__fn_argv:q <<__FN_BODY__\\\\
+                set __cdfcompleteargv=(\\\$COMMAND_LINE)\\\\
+                if (\\\$COMMAND_LINE:q =~ '"'"'"'"'"'"'"'"'* '"'"'"'"'"'"'"'"') then\\\\
+                    set __cdfcompleteargv=(\\\$__cdfcompleteargv:q '"'"'"'"'"'"'"'"''"'"'"'"'"'"'"'"')\\\\
                 endif\\\\
                 \\\\
-                switch (\\\$#__cdfcompleteargs)\\\\
+                switch (\\\$#__cdfcompleteargv)\\\\
                 case 2:\\\\
-                    switch (\\\$__cdfcompleteargs[2]:q)\\\\
+                    switch (\\\$__cdfcompleteargv[2]:q)\\\\
                     case "-*":\\\\
-                        printf "%s\\n" -- -a -g -l -r -w -h\\\\
+                        printf "%s\\\\n" -- -a -g -l -r -w -h\\\\
                         breaksw\\\\
                     default:\\\\
                         command -- cdf -l\\\\
@@ -534,17 +531,17 @@ sub main {
                     endsw\\\\
                     breaksw\\\\
                 default:\\\\
-                    switch (\\\$__cdfcompleteargs[2]:q)\\\\
+                    switch (\\\$__cdfcompleteargv[2]:q)\\\\
                     case "--":\\\\
                         command -- cdf -l\\\\
                         breaksw\\\\
                     case "-a":\\\\
-                        switch (\\\$#__cdfcompleteargs)\\\\
+                        switch (\\\$#__cdfcompleteargv)\\\\
                         case 3:\\\\
                             command -- cdf -l\\\\
                             breaksw\\\\
                         default:\\\\
-                            sh -c \${__cdfq}ls -dp -- "\\\$1"* 2> /dev/null\${__cdfq} -- \\\$__cdfcompleteargs[\\\$#__cdfcompleteargs]:q | awk \${__cdfq}/\\/\\\$/{print;print}\${__cdfq}\\\\
+                            sh -c '"'"'"'"'"'"'"'"'ls -dp -- "\\\$1"* 2> /dev/null'"'"'"'"'"'"'"'"' -- \\\$__cdfcompleteargv[\\\$#__cdfcompleteargv]:q | awk '"'"'"'"'"'"'"'"'/\\\\/\\\$/{print;print}'"'"'"'"'"'"'"'"'\\\\
                             breaksw\\\\
                         endsw\\\\
                         breaksw\\\\
@@ -555,16 +552,14 @@ sub main {
                         command -- cdf -l\\\\
                         breaksw\\\\
                     case "-w":\\\\
-                        printf "%s\\n" @$supported_shells\\\\
+                        printf "%s\\\\n" @$supported_shells\\\\
                         breaksw\\\\
                     endsw\\\\
                     breaksw\\\\
                 endsw\\\\
-            __BODY__\\\\
-            true\\\\
-            '"'"';\\\\
-            unset __cdfcompleteargs;\\\\
-            unset __cdfq;\\\\
+            __FN_BODY__\\\\
+            '"'"'\\\\
+            unset __fn_argv;\\\\
             '
             complete cdf 'p/*/`__cdfcomplete`/'
             EOF
