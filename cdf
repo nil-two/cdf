@@ -56,7 +56,7 @@ sub write_file {
 sub main {
     if ((@ARGV == 0) || (@ARGV == 1 && $ARGV[0] eq "--")) {
         print STDERR $usage;
-        exit 2;
+        exit 1;
     }
     if (($ARGV[0] !~ /^-/) || (@ARGV > 1 && $ARGV[0] eq "--")) {
         print STDERR <<"        EOF" =~ s/^ {8}//gmr;
@@ -66,7 +66,7 @@ sub main {
         command -v $cmd_name > /dev/null && eval "\$($cmd_name -w)"
 
         EOF
-        exit 2;
+        exit 1;
     }
 
     my $mode = shift @ARGV;
@@ -75,11 +75,11 @@ sub main {
 
         if (@ARGV < 1) {
             print STDERR "$cmd_name: $mode: no input name\n";
-            exit 2;
+            exit 1;
         }
         if (-e $CDFFILE && ! -f $CDFFILE) {
             print STDERR "$cmd_name: $mode: \$CDFFILE should be a file\n";
-            exit 2;
+            exit 1;
         }
 
         my $label = $ARGV[0];
@@ -100,11 +100,11 @@ sub main {
 
         if (@ARGV < 1) {
             print STDERR "$cmd_name: $mode: no input name\n";
-            exit 2;
+            exit 1;
         }
         if (! -e $CDFFILE) {
             print STDERR "$cmd_name: $mode: \$CDFFILE doesn't exists\n";
-            exit 2;
+            exit 1;
         }
 
         my $label = $ARGV[0];
@@ -122,7 +122,7 @@ sub main {
 
         if (! -e $CDFFILE) {
             print STDERR "$cmd_name: $mode: \$CDFFILE doesn't exists\n";
-            exit 2;
+            exit 1;
         }
 
         my $pathes = decode_json(read_file($CDFFILE));
@@ -135,11 +135,11 @@ sub main {
 
         if (@ARGV < 1) {
             print STDERR "$cmd_name: $mode: no input name\n";
-            exit 2;
+            exit 1;
         }
         if (! -e $CDFFILE) {
             print STDERR "$cmd_name: $mode: \$CDFFILE doesn't exists\n";
-            exit 2;
+            exit 1;
         }
 
         my $labels = [@ARGV];
@@ -809,7 +809,7 @@ sub main {
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";
-            exit 2;
+            exit 1;
         }
 
     } elsif ($mode eq "-h") {
@@ -820,7 +820,7 @@ sub main {
 
         print STDERR "$cmd_name: unrecognized command '$mode'\n";
         print STDERR "Try '$cmd_name -h' for more information.\n";
-        exit 2;
+        exit 1;
 
     }
 }

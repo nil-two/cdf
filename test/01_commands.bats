@@ -61,13 +61,13 @@ check() {
 
 @test 'cdf -a: output error if no arguments passed' {
   check "$cdf" -a
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
 @test 'cdf -a: output error if CDFFILE doesn'"'"'t exist' {
   check "$cdf" -a
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
@@ -81,7 +81,7 @@ check() {
 
 @test 'cdf -g: output error if no arguments passed' {
   check "$cdf" -g
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
@@ -97,7 +97,7 @@ check() {
   rm -f -- "$CDFFILE"
 
   check "$cdf" -g aaa
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
@@ -119,7 +119,7 @@ check() {
   rm -f -- "$CDFFILE"
 
   check "$cdf" -l
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
@@ -148,7 +148,7 @@ check() {
 
 @test 'cdf -r: output error if no arguments passed' {
   check "$cdf" -r
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
@@ -156,7 +156,7 @@ check() {
   rm -f -- "$CDFFILE"
 
   check "$cdf" -r fn
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
@@ -174,7 +174,7 @@ check() {
 
 @test 'cdf -w: output error if the shell unsupported' {
   check "$cdf" -w vim
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 

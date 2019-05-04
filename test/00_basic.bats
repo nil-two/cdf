@@ -31,31 +31,31 @@ check() {
 
 @test 'cdf: print usage if no arguments passed' {
   check "$cdf"
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^usage ]]
 }
 
 @test 'cdf: print usage if double dash passed' {
   check "$cdf" --
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^usage ]]
 }
 
 @test 'cdf: output message to use "cdf -h" if unknown command passed' {
   check "$cdf" --vim
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
 @test 'cdf: outputs guidance to use "cdf -w" if label passed' {
   check "$cdf" fn
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^"cdf: shell integration not enabled" ]]
 }
 
 @test 'cdf: outputs guidance to use "cdf -w" if label passed with double dash' {
   check "$cdf" -- fn
-  [[ $(cat "$exitcode") == 2 ]]
+  [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^'cdf: shell integration not enabled' ]]
 }
 
