@@ -221,33 +221,33 @@ sub main {
                 case \$COMP_CWORD in
                     1)
                         case \$cur in
-                            -*) COMPREPLY=( \$(compgen -W "-- -a -g -l -r -w -h" -- "\$cur") ) ;;
-                            *)  COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") ) ;;
+                            -*) mapfile -t COMPREPLY < <(compgen -W "-- -a -g -l -r -w -h" -- "\$cur") ;;
+                            *)  mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur") ;;
                         esac
                         ;;
                     *)
                         local cmd=\${COMP_WORDS[1]}
                         case \$cmd in
                             --)
-                                COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
+                                mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur")
                                 ;;
                             -a)
                                 case \$COMP_CWORD in
-                                    2) COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") ) ;;
+                                    2) mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur") ;;
                                     *) _filedir -d ;;
                                 esac
                                 ;;
                             -g)
-                                COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
+                                mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur")
                                 ;;
                             -l)
                                 COMPREPLY=()
                                 ;;
                             -r)
-                                COMPREPLY=( \$(compgen -W "\$(cdf -l)" -- "\$cur") )
+                                mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur")
                                 ;;
                             -w)
-                                COMPREPLY=( \$(compgen -W "@$supported_shells" -- "\$cur") )
+                                mapfile -t COMPREPLY < <(compgen -W "@$supported_shells" -- "\$cur")
                                 ;;
                         esac
                         ;;
