@@ -240,9 +240,6 @@ sub main {
                             -g)
                                 mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur")
                                 ;;
-                            -l)
-                                COMPREPLY=()
-                                ;;
                             -r)
                                 mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur")
                                 ;;
