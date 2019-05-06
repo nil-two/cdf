@@ -193,7 +193,7 @@ sub main {
 
                 set -- "\$(command -- cdf -g "\$1")"
                 if [[ -n \$1 ]]; then
-                    cd "\$1"
+                    cd "\$1" || return
                 fi
             }
             EOF
