@@ -408,7 +408,8 @@ sub main {
             }
 
             function completion/cdf::completelabel {
-                complete -- \$(cdf -l)
+                typeset lines
+                lines=\$(cdf -l) && while read -r label; do complete -- "\$label"; done <<< "\$lines"
             }
 
             function completion/cdf::completewrapper {
