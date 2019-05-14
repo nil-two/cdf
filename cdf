@@ -366,7 +366,7 @@ sub main {
                     1)
                         case \$TARGETWORD in
                             -*) command -f completion/cdf::completecmd ;;
-                            *)    command -f completion/cdf::completelabel ;;
+                            *)  command -f completion/cdf::completelabel ;;
                         esac
                         ;;
                     *)
@@ -599,9 +599,9 @@ sub main {
                     table.remove(args, 1)
                 end
 
-                local label                = args[1]
+                local label        = args[1]
                 local quoted_label = label:gsub([[']], [['"'"']]):gsub([[^]], [[']]):gsub([[\$]], [[']])
-                local next_path        = nyagos.eval("command -- cdf -g " .. quoted_label)
+                local next_path    = nyagos.eval("command -- cdf -g " .. quoted_label)
                 if next_path ~= nil and next_path ~= "" then
                     nyagos.chdir(next_path)
                 end
@@ -775,15 +775,15 @@ sub main {
                 param(\$commandName, \$wordToComplete, \$cursorPosition)
 
                 if (\$wordToComplete.ToString().Length -ne \$cursorPosition) {
-                    \$line = \$wordToComplete.ToString().Substring(0, \$cursorPosition-1)
+                    \$line  = \$wordToComplete.ToString().Substring(0, \$cursorPosition-1)
                     \$words = \$line.Split(" ") + ""
                     \$cword = \$words.Length
-                    \$cur     = \$words[\$cword-1]
+                    \$cur   = \$words[\$cword-1]
                 } else {
-                    \$line = \$wordToComplete.ToString().Substring(0, \$cursorPosition)
+                    \$line  = \$wordToComplete.ToString().Substring(0, \$cursorPosition)
                     \$words = \$line.Split(" ")
                     \$cword = \$words.Length
-                    \$cur     = \$words[\$cword-1]
+                    \$cur   = \$words[\$cword-1]
                 }
 
                 \$comps = @()
@@ -811,7 +811,7 @@ sub main {
 
                 \$comps | Where { \$_ -like "\${cur}*" } | ForEach-Object {
                     [System.Management.Automation.CompletionResult]::new(\$_, \$_, "ParameterValue", \$_)
-                }
+
             }
             EOF
         } else {
