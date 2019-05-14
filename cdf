@@ -811,7 +811,7 @@ sub main {
 
                 \$comps | Where { \$_ -like "\${cur}*" } | ForEach-Object {
                     [System.Management.Automation.CompletionResult]::new(\$_, \$_, "ParameterValue", \$_)
-
+                }
             }
             EOF
         } else {
