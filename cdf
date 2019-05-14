@@ -218,33 +218,34 @@ sub main {
 
             _cdf() {
                 local cur=\${COMP_WORDS[COMP_CWORD]}
+                local lines
                 case \$COMP_CWORD in
                     1)
                         case \$cur in
-                            -*) mapfile -t COMPREPLY < <(compgen -W "-- -a -g -l -r -w -h" -- "\$cur") ;;
-                            *)  mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur") ;;
+                            -*) mapfile -t COMPREPLY < <(compgen -W '-- -a -g -l -r -w -h' -- "\$cur") ;;
+                            *)  lines=\$(IFS=\$'\\n' compgen -W '\$(cdf -l)' -- "\$cur") && while read -r line; do COMPREPLY+=( "\$(printf "%q\\n" "\$line")" ); done <<< "\$lines" ;;
                         esac
                         ;;
                     *)
                         local cmd=\${COMP_WORDS[1]}
                         case \$cmd in
                             --)
-                                mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur")
+                                lines=\$(IFS=\$'\\n' compgen -W '\$(cdf -l)' -- "\$cur") && while read -r line; do COMPREPLY+=( "\$(printf "%q\\n" "\$line")" ); done <<< "\$lines"
                                 ;;
                             -a)
                                 case \$COMP_CWORD in
-                                    2) mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur") ;;
+                                    2) lines=\$(IFS=\$'\\n' compgen -W '\$(cdf -l)' -- "\$cur") && while read -r line; do COMPREPLY+=( "\$(printf "%q\\n" "\$line")" ); done <<< "\$lines" ;;
                                     *) _filedir -d ;;
                                 esac
                                 ;;
                             -g)
-                                mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur")
+                                lines=\$(IFS=\$'\\n' compgen -W '\$(cdf -l)' -- "\$cur") && while read -r line; do COMPREPLY+=( "\$(printf "%q\\n" "\$line")" ); done <<< "\$lines"
                                 ;;
                             -r)
-                                mapfile -t COMPREPLY < <(compgen -W "\$(cdf -l)" -- "\$cur")
+                                lines=\$(IFS=\$'\\n' compgen -W '\$(cdf -l)' -- "\$cur") && while read -r line; do COMPREPLY+=( "\$(printf "%q\\n" "\$line")" ); done <<< "\$lines"
                                 ;;
                             -w)
-                                mapfile -t COMPREPLY < <(compgen -W "@$supported_shells" -- "\$cur")
+                                mapfile -t COMPREPLY < <(compgen -W '@$supported_shells' -- "\$cur")
                                 ;;
                         esac
                         ;;
