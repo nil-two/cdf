@@ -274,12 +274,12 @@ sub main {
 
             _cdf() {
                 local cur=\${words[\$CURRENT]}
+                local commands labels
                 case \$CURRENT in
                     2)
                         case \$cur in
                             -*)
-                                local modes
-                                modes=(
+                                commands=(
                                 "--[chdir to the path so labeled]"
                                 "-a[save the path with the label]"
                                 "-g[get the path so labeled]"
@@ -288,10 +288,11 @@ sub main {
                                 "-w[output the wrapper script]"
                                 "-h[print usage]"
                                 )
-                                _values "mode" \$modes
+                                _values "command" \$commands
                                 ;;
                             *)
-                                _values "label" \$(cdf -l)
+                                labels=( \${(f)"\$(cdf -l)"} )
+                                _describe "label" labels
                                 ;;
                         esac
                         ;;
@@ -299,21 +300,29 @@ sub main {
                         local mode=\${words[2]}
                         case \$mode in
                             --)
-                                _values "label" \$(cdf -l)
+                                labels=( \${(f)"\$(cdf -l)"} )
+                                _describe "label" labels
                                 ;;
                             -a)
                                 case \$CURRENT in
-                                    3) _values "label" \$(cdf -l) ;;
-                                    *) _path_files -/ ;;
+                                    3)
+                                      labels=( \${(f)"\$(cdf -l)"} )
+                                      _describe "label" labels
+                                      ;;
+                                    *)
+                                      _path_files -/
+                                      ;;
                                 esac
                                 ;;
                             -g)
-                                _values "label" \$(cdf -l)
+                                labels=( \${(f)"\$(cdf -l)"} )
+                                _describe "label" labels
                                 ;;
                             -l)
                                 ;;
                             -r)
-                                _values "label" \$(cdf -l)
+                                labels=( \${(f)"\$(cdf -l)"} )
+                                _describe "label" labels
                                 ;;
                             -w)
                                 _values "type" @$supported_shells
