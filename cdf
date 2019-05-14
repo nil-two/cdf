@@ -600,36 +600,45 @@ sub main {
                 end
 
                 local label        = args[1]
-                local quoted_label = label:gsub([[']], [['"'"']]):gsub([[^]], [[']]):gsub([[\$]], [[']])
+                local quoted_label = "'" .. label:gsub([[']], [['"'"']]) .. "'"
                 local next_path    = nyagos.eval("command -- cdf -g " .. quoted_label)
                 if next_path ~= nil and next_path ~= "" then
                     nyagos.chdir(next_path)
                 end
             end
+
             nyagos.complete_for.cdf = function(args)
                 local cur = args[#args]
+                local function scan(pat, s)
+                    local a = {}
+                    for w in s:gmatch(pat) do
+                        table.insert(a, w)
+                    end
+                    return a
+                end
+
                 if #args == 2 then
                     if cur:match([[^-]]) then
-                        return nyagos.fields("-- -a -g -l -r -w -h")
+                        return {"--", "-a", "-g", "-l", "-r", "-w", "-h"}
                     else
-                        return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                        return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
                     end
                 else
                     local cmd = args[2]
                     if cmd == "--" then
-                        return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                        return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
                     elseif cmd == "-a" then
                         if #args == 3 then
-                            return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                            return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
                         else
                             return nil
                         end
                     elseif cmd == "-g" then
-                        return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                        return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
                     elseif cmd == "-l" then
                         return {}
                     elseif cmd == "-r" then
-                        return nyagos.fields(nyagos.eval("command -- cdf -l"))
+                        return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
                     elseif cmd == "-w" then
                         return nyagos.fields("@$supported_shells")
                     elseif cmd == "-h" then
