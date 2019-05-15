@@ -61,7 +61,7 @@ Installation
 | zsh        | eval "$(cdf -w zsh)"                                                          |
 | yash       | eval "$(cdf -w yash)"                                                         |
 | fish       | source (cdf -w fish \| psub)                                                  |
-| tcsh       | unalias cdf<br>cdf -w tcsh \| source /dev/stdin<br>true                       |
+| tcsh       | cdf -w tcsh \| source /dev/stdin; true                                        |
 | rc         | ifs='' eval \`{cdf -w rc}                                                     |
 | nyagos     | lua\_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"                         |
 | xonsh      | execx($(cdf -w xonsh))                                                        |
@@ -182,8 +182,7 @@ $ eval "$(cdf -w yash)"
 $ source (cdf -w fish | psub)
 (Enable the shell integration for fish)
 
-$ unalias cdf
-$ cdf -w tcsh | source /dev/stdin
+$ cdf -w tcsh | source /dev/stdin; true
 (Enable the shell integration for tcsh)
 
 $ ifs='' eval `{cdf -w rc}

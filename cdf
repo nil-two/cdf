@@ -489,6 +489,8 @@ sub main {
             set __fn_argv=(\\!:*);\\\\
             eval '"'"'\\\\
             source /dev/stdin \$__fn_argv:q <<__FN_BODY__\\\\
+                unset __fn_argv\\\\
+                \\\\
                 if (\\\$#argv == 0) then\\\\
                     command -- cdf\\\\
                     exit\\\\
@@ -515,13 +517,14 @@ sub main {
                 unset __cdfnextpath\\\\
             __FN_BODY__\\\\
             '"'"'\\\\
-            unset __fn_argv;\\\\
             '
 
             alias __cdfcomplete '\\\\
             set __fn_argv=(\\!:*);\\\\
             eval '"'"'\\\\
             source /dev/stdin \$__fn_argv:q <<__FN_BODY__\\\\
+                unset __fn_argv\\\\
+                \\\\
                 set __cdfcompleteargv=(\\\$COMMAND_LINE)\\\\
                 if (\\\$COMMAND_LINE:q =~ '"'"'"'"'"'"'"'"'* '"'"'"'"'"'"'"'"') then\\\\
                     set __cdfcompleteargv=(\\\$__cdfcompleteargv:q '"'"'"'"'"'"'"'"''"'"'"'"'"'"'"'"')\\\\
@@ -567,7 +570,6 @@ sub main {
                 endsw\\\\
             __FN_BODY__\\\\
             '"'"'\\\\
-            unset __fn_argv;\\\\
             '
             complete cdf 'p/*/`__cdfcomplete`/'
             EOF
