@@ -1,3 +1,13 @@
+### v2.6.1 - 2019-05-18
+
+- Escape spaces and special characters in bash-completion
+- Escape spaces and special characters in zsh-completion
+- Escape spaces and special characters in yash-completion
+- Escape spaces and special characters in nyagos-completion
+- Avoid word-splitting in xonsh-completion
+- Allow "cdf -w tcsh | source /dev/stdin" without "unalias cdf" in tcsh
+- Unify exitcodes to 1 on failure
+
 ### v2.6.0 - 2019-05-03
 
 - Support cmd.
