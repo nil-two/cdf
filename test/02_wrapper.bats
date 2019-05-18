@@ -110,6 +110,15 @@ check() {
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
+@test 'cdf supports xyzsh' {
+  ! command -v xyzsh > /dev/null && skip
+  printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"
+
+  CDF=$cdf check xyzsh <<< $'eval "$(sys::command -- $CDF -w xyzsh)"\ncdf usr\npwd'
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") =~ "/usr" ]]
+}
+
 @test 'cdf supports xonsh' {
   ! command -v xonsh > /dev/null && skip
   printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"

@@ -13,7 +13,7 @@ if ($^O eq "MSWin32") {
     $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
 }
 
-my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xonsh cmd powershell)];
+my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xyzsh xonsh cmd powershell)];
 
 my $cmd_name;
 if ($^O eq "MSWin32") {
@@ -649,6 +649,35 @@ sub main {
                     end
                 end
             end
+            EOF
+        } elsif ($type eq "xyzsh") {
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            def cdf (
+              sys::printf "%s\\n" -a -g -l -r -w -h | each (
+                | var -local flag
+                if (hash -key \$flag OPTIONS | chomp |!= "") (
+                  if (ary -size ARGV | -eq 0) (
+                    sys::cdf \$flag || return 1
+                    return 0
+                  ) else (
+                    sys::cdf \$flag \$ARGV || return 1
+                    return 0
+                  )
+                )
+              )
+
+              if (ary -size ARGV | -eq 0) (
+                sys::cdf || return 1
+                return 0
+              )
+
+              sys::cdf -g \$(ary -index 0 ARGV) | var -local nextpath
+              cd \$nextpath || return 1
+            )
+
+            completion cdf sys::cdf (
+              sys::cdf -l
+            )
             EOF
         } elsif ($type eq "xonsh") {
             print <<"            EOF" =~ s/^ {12}//gmr;

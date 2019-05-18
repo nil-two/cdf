@@ -35,7 +35,7 @@ usage:
   cdf -h                   # print usage
 
 supported-shells:
-  sh, ksh, bash, zsh, yash, fish, tcsh, rc, nyagos, xonsh, cmd, powershell
+  sh, ksh, bash, zsh, yash, fish, tcsh, rc, nyagos, xyzsh, xonsh, cmd, powershell
 
 environment-variables:
   CDFFILE  # the registry path (default: ~/.config/cdf/cdf.json)
@@ -64,6 +64,7 @@ Installation
 | tcsh       | cdf -w tcsh \| source /dev/stdin; true                                        |
 | rc         | ifs='' eval \`{cdf -w rc}                                                     |
 | nyagos     | lua\_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"                         |
+| xyzsh      | eval "$(sys::cdf -w xyzsh)"                                                   |
 | xonsh      | execx($(cdf -w xonsh))                                                        |
 | cmd        | perl cdf -w cmd > %homepath%\\.cdf.bat<br>doskey cdf=%homepath%\\.cdf.bat $\* |
 | powershell | Invoke-Expression (@(cdf -w powershell) -join "`n")                           |
@@ -159,6 +160,7 @@ Supported shells are as follows:
 - tcsh
 - rc
 - nyagos
+- xyzsh
 - xonsh
 - cmd
 - powershell
@@ -190,6 +192,9 @@ $ ifs='' eval `{cdf -w rc}
 
 $ lua_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"
 (Enable the shell integration for nyagos)
+
+$ eval "$(sys::cdf -w xyzsh)"
+(Enable the shell integration for xyzsh)
 
 $ execx($(cdf -w xonsh))
 (Enable the shell integration for xonsh)
