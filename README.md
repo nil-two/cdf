@@ -35,7 +35,8 @@ usage:
   cdf -h                   # print usage
 
 supported-shells:
-  sh, ksh, bash, zsh, yash, fish, tcsh, rc, nyagos, xyzsh, xonsh, cmd, powershell
+  sh, ksh, bash, zsh, yash, fish, tcsh, rc,
+  nyagos, xyzsh, xonsh, cmd, powershell
 
 environment-variables:
   CDFFILE  # the registry path (default: ~/.config/cdf/cdf.json)
