@@ -105,7 +105,7 @@ check() {
   ! command -v nyagos > /dev/null && skip
   printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"
 
-  printf "%s\n" $'lua_e "loadstring(nyagos.eval(""%CDF% -w nyagos""))()"\ncdf usr\npwd' | CDF=$cdf nyagos
+  CDF=$cdf check nyagos <<< $'lua_e "loadstring(nyagos.eval(""%CDF% -w nyagos""))()"\ncdf usr\npwd'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]
 }
@@ -123,7 +123,7 @@ check() {
   ! command -v xonsh > /dev/null && skip
   printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"
 
-  CDF=$cdf xonsh -c $'execx($($CDF -w xonsh))\ncdf usr\npwd'
+  CDF=$cdf check xonsh -c $'execx($($CDF -w xonsh))\ncdf usr\npwd'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]
 }
@@ -132,7 +132,7 @@ check() {
   ! command -v pwsh > /dev/null && skip
   printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDFFILE"
 
-  CDF=/home/nil2/bin/cdf pwsh -Command 'Invoke-Expression (@(& $env:CDF "-w" powershell) -join "`n"); cdf fn; Write-Host @(pwd)'
+  CDF=$cdf check pwsh -Command 'Invoke-Expression (@(& $env:CDF "-w" powershell) -join "`n"); cdf usr; Write-Host @(pwd)'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]
 }
