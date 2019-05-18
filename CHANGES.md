@@ -1,3 +1,7 @@
+### v2.7.0 - 2019-05-18
+
+- Support xyzsh
+
 ### v2.6.1 - 2019-05-18
 
 - Escape spaces and special characters in bash-completion
