@@ -684,20 +684,20 @@ sub main {
                         if prefix.startswith("-"):
                             raw_comps += ["--", "-a", "-g", "-l", "-r", "-w", "-h"]
                         else:
-                            raw_comps += \$(command -- cdf -l).split()
+                            raw_comps += \$(command -- cdf -l).strip().split("\\n")
                     else:
                         if words[1] == "--":
-                            raw_comps += \$(command -- cdf -l).split()
+                            raw_comps += \$(command -- cdf -l).strip().split("\\n")
                         elif words[1] == "-a":
                             if len(words) == 3:
-                                raw_comps += \$(command -- cdf -l).split()
+                                raw_comps += \$(command -- cdf -l).strip().split("\\n")
                             else:
                                 comps, lp = complete_dir(prefix, line, start, end, ctx, True)
                                 completed = True
                         elif words[1] == "-g":
-                            raw_comps += \$(command -- cdf -l).split()
+                            raw_comps += \$(command -- cdf -l).strip().split("\\n")
                         elif words[1] == "-r":
-                            raw_comps += \$(command -- cdf -l).split()
+                            raw_comps += \$(command -- cdf -l).strip().split("\\n")
                         elif words[1] == "-w":
                             raw_comps += [@{[join ", ", map { "\"$_\"" } @$supported_shells]}]
 
