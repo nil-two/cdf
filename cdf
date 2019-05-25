@@ -13,7 +13,7 @@ if ($^O eq "MSWin32") {
     $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
 }
 
-my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xyzsh xonsh cmd powershell)];
+my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xyzsh xonsh eshell cmd powershell)];
 
 my $cmd_name;
 if ($^O eq "MSWin32") {
@@ -33,7 +33,7 @@ usage:
 
 supported-shells:
   sh, ksh, bash, zsh, yash, fish, tcsh, rc,
-  nyagos, xyzsh, xonsh, cmd, powershell
+  nyagos, xyzsh, xonsh, eshell, cmd, powershell
 
 environment-variables:
   CDFFILE  # the registry path (default: ~/.config/cdf/cdf.json)
@@ -744,6 +744,23 @@ sub main {
 
             if \$(completer list).find('cdf : Completion for "cdf"') == -1:
                 completer add cdf __complete_cdf
+            EOF
+        } elsif ($type eq "eshell") {
+            print <<"            EOF" =~ s/^ {12}//gmr;
+            (defun eshell/cdf (&rest args)
+              "Chdir to the favorite directory"
+              (let ((argc (length args))
+                    (to-args (lambda (&rest ls) (apply 'concat (mapcar (lambda (s) (concat s " ")) (eshell-flatten-list ls))))))
+                (cond
+                  ((or (= argc 0)
+                       (and (= argc 1) (string= (car args) "--"))
+                       (and (>= argc 1) (string-match "^-" (car args)) (not (string= (car args) "--"))))
+                   (shell-command-to-string (funcall to-args "cdf" args)))
+                  (t
+                    (let* ((label (if (string= (car args) "--") (cdar args) (car args)))
+                           (nextpath (shell-command-to-string (funcall to-args "cdf" "-g" label)))
+                           (nextpath-chomped (replace-regexp-in-string "[\\n\\r]+\$" "" nextpath)))
+                      (cd nextpath-chomped))))))
             EOF
         } elsif ($type eq "cmd") {
             my $cdf_bin_path = abs_path($0);

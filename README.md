@@ -36,7 +36,7 @@ usage:
 
 supported-shells:
   sh, ksh, bash, zsh, yash, fish, tcsh, rc,
-  nyagos, xyzsh, xonsh, cmd, powershell
+  nyagos, xyzsh, xonsh, eshell, cmd, powershell
 
 environment-variables:
   CDFFILE  # the registry path (default: ~/.config/cdf/cdf.json)
@@ -67,6 +67,7 @@ Installation
 | nyagos     | lua\_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"                         |
 | xyzsh      | eval "$(sys::cdf -w xyzsh)"                                                   |
 | xonsh      | execx($(cdf -w xonsh))                                                        |
+| eshell     | (eval (car (read-from-string (shell-command-to-string "cdf -w eshell"))))     |
 | cmd        | perl cdf -w cmd > %homepath%\\.cdf.bat<br>doskey cdf=%homepath%\\.cdf.bat $\* |
 | powershell | Invoke-Expression (@(cdf -w powershell) -join "`n")                           |
 
@@ -163,6 +164,7 @@ Supported shells are as follows:
 - nyagos
 - xyzsh
 - xonsh
+- eshell
 - cmd
 - powershell
 
@@ -199,6 +201,9 @@ $ eval "$(sys::cdf -w xyzsh)"
 
 $ execx($(cdf -w xonsh))
 (Enable the shell integration for xonsh)
+
+$ (eval (car (read-from-string (shell-command-to-string "cdf -w eshell"))))
+(Enable the shell integration for eshell)
 
 $ perl cdf -w cmd > %homepath%\.cdf.bat
 $ doskey cdf=%homepath%\.cdf.bat $*
