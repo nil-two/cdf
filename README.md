@@ -7,7 +7,7 @@ Chdir to the favorite directory.
 
 ```
 $ pwd
-/home/usr/work/projects/first
+/home/user/work/projects/first
 $ cdf -a first
 (save the path of current directory with label "first")
 
@@ -18,7 +18,7 @@ $ pwd
 $ cdf first
 (chdir to the directory labeled "first")
 $ pwd
-/home/usr/work/projects/first
+/home/user/work/projects/first
 ```
 
 Usage
