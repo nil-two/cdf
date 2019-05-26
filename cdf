@@ -613,9 +613,9 @@ sub main {
 
             nyagos.complete_for.cdf = function(args)
                 local cur = args[#args]
-                local function scan(pat, s)
+                local function to_lines(s)
                     local a = {}
-                    for w in s:gmatch(pat) do
+                    for w in s:gmatch("[^\\r\\n]+") do
                         table.insert(a, w)
                     end
                     return a
@@ -625,24 +625,24 @@ sub main {
                     if cur:match([[^-]]) then
                         return {"--", "-a", "-g", "-l", "-r", "-w", "-h"}
                     else
-                        return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
+                        return to_lines(nyagos.eval("command -- cdf -l"))
                     end
                 else
                     local cmd = args[2]
                     if cmd == "--" then
-                        return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
+                        return to_lines(nyagos.eval("command -- cdf -l"))
                     elseif cmd == "-a" then
                         if #args == 3 then
-                            return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
+                            return to_lines(nyagos.eval("command -- cdf -l"))
                         else
                             return nil
                         end
                     elseif cmd == "-g" then
-                        return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
+                        return to_lines(nyagos.eval("command -- cdf -l"))
                     elseif cmd == "-l" then
                         return {}
                     elseif cmd == "-r" then
-                        return scan("[^\\r\\n]+", nyagos.eval("command -- cdf -l"))
+                        return to_lines(nyagos.eval("command -- cdf -l"))
                     elseif cmd == "-w" then
                         return nyagos.fields("@$supported_shells")
                     elseif cmd == "-h" then
