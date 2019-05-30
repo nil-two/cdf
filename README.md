@@ -105,7 +105,7 @@ If the path is ommited, the path will be the current working directory.
 $ cdf -a work
 (Save the current working directory as work)
 
-$ cdf bin /home/user/bin
+$ cdf -a bin /home/user/bin
 (Save the /home/user/bin as bin)
 ```
 
@@ -114,11 +114,11 @@ $ cdf bin /home/user/bin
 Print the path so labeled.
 
 ```
-$ cdf home
+$ cdf -g home
 /home/user
 (Print if /home/user is labeled home)
 
-$ cdf go
+$ cdf -g go
 /home/user/work/dev/go/github.com/user 
 (Print if /home/user/work/dev/go/github.com/user is labeled go)
 ```
