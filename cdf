@@ -186,6 +186,7 @@ sub main {
             cdf() {
                 if [[ \$# -eq 0 || ( \$# -eq 1 && \$1 = -- ) || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
                     command -- cdf "\$@"
+                    return
                 fi
 
                 if [[ \$1 = -- ]]; then
