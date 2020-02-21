@@ -1,3 +1,7 @@
+### v2.7.1 - 2020-02-22
+
+- Support Bash3.x
+
 ### v2.7.0 - 2019-05-18
 
 - Support xyzsh
