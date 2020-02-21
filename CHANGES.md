@@ -1,3 +1,8 @@
+### v2.7.2 - 2020-02-22
+
+- Change shebang from `#!/usr/bin/perl` to `#!/usr/bin/env perl`
+- Fix broken ksh-wrapper
+
 ### v2.7.1 - 2020-02-22
 
 - Support Bash3.x
