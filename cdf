@@ -238,7 +238,7 @@ sub main {
                             -a)
                                 case \$COMP_CWORD in
                                     2) IFS=\$'\\n'; COMPREPLY=( \$(compgen -W '\$(cdf -l)' -- "\$cur") ); IFS=\$defaultIFS ;;
-                                    *) _filedir -d ;;
+                                    *) IFS=\$'\\n'; COMPREPLY=( \$(compgen -A directory -- "\$cur") ); compopt -o filenames; IFS=\$defaultIFS ;;
                                 esac
                                 ;;
                             -g)
