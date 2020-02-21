@@ -238,7 +238,7 @@ sub main {
                             -a)
                                 case \$COMP_CWORD in
                                     2) IFS=\$'\\n'; COMPREPLY=( \$(compgen -W '\$(cdf -l)' -- "\$cur") ); IFS=\$defaultIFS ;;
-                                    *) IFS=\$'\\n'; COMPREPLY=( \$(compgen -A directory -- "\$cur") ); compopt -o filenames; IFS=\$defaultIFS ;;
+                                    *) IFS=\$'\\n'; COMPREPLY=( \$(compgen -A directory -- "\$cur") ); type compopt &> /dev/null && compopt -o filenames 2> /dev/null || compgen -f /non-existing-dir/ >/dev/null; IFS=\$defaultIFS ;;
                                 esac
                                 ;;
                             -g)
