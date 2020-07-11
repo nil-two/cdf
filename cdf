@@ -836,52 +836,9 @@ sub main {
                     \$args = \$args[1 .. -1]
                 }
 
-                \$nextpath = @(command -- cdf -g \$args[0])
+                \$nextpath = @(perl $cdf_bin_path -g \$args[0])
                 if (\$nextpath.Length -ge 1) {
                     cd ([string]\$nextpath)
-                }
-            }
-
-            Register-ArgumentCompleter -Native -CommandName cdf -ScriptBlock {
-                param(\$commandName, \$wordToComplete, \$cursorPosition)
-
-                if (\$wordToComplete.ToString().Length -ne \$cursorPosition) {
-                    \$line  = \$wordToComplete.ToString().Substring(0, \$cursorPosition-1)
-                    \$words = \$line.Split(" ") + ""
-                    \$cword = \$words.Length
-                    \$cur   = \$words[\$cword-1]
-                } else {
-                    \$line  = \$wordToComplete.ToString().Substring(0, \$cursorPosition)
-                    \$words = \$line.Split(" ")
-                    \$cword = \$words.Length
-                    \$cur   = \$words[\$cword-1]
-                }
-
-                \$comps = @()
-                if (\$words.Length -eq 2) {
-                    if (\$cur.StartsWith("-")) {
-                        \$comps = @("--", "-a", "-g", "-l", "-r", "-w", "-h")
-                    } else {
-                        \$comps = @(command -- cdf -l)
-                    }
-                } elseif (\$words.Length -ge 3) {
-                    if (\$words[1] -eq "--") {
-                        \$comps = @(command -- cdf -l)
-                    } elseif (\$words[1] -eq "-a") {
-                        if (\$words.Length -eq 3) {
-                            \$comps = @(command -- cdf -l)
-                        }
-                    } elseif (\$words[1] -eq "-g") {
-                        \$comps = @(command -- cdf -l)
-                    } elseif (\$words[1] -eq "-r") {
-                        \$comps = @(command -- cdf -l)
-                    } elseif (\$words[1] -eq "-w") {
-                        \$comps = @(@{[join ", ", map { "\"$_\"" } @$supported_shells]})
-                    }
-                }
-
-                \$comps | Where { \$_ -like "\${cur}*" } | ForEach-Object {
-                    [System.Management.Automation.CompletionResult]::new(\$_, \$_, "ParameterValue", \$_)
                 }
             }
             EOF
