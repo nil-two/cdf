@@ -820,15 +820,15 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             function cdf {
                 if (\$args.Length -eq 0) {
-                    command -- cdf
+                    perl $cdf_bin_path
                     return
                 }
                 if (\$args.Length -eq 1 -and ([string]\$args[0]) -eq "--") {
-                    command -- cdf
+                    perl $cdf_bin_path
                     return
                 }
                 if (\$args.Length -ge 1 -and ([string]\$args[0]).StartsWith("-") -and ([string]\$args[0]) -ne "--") {
-                    command -- cdf \$args
+                    perl $cdf_bin_path \$args
                     return
                 }
 
