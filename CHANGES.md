@@ -1,3 +1,8 @@
+### v2.7.3 - 2020-07-12
+
+- Support Windows powershell
+- Remove powershell-completion to support Windows powershell
+
 ### v2.7.2 - 2020-02-22
 
 - Change shebang from `#!/usr/bin/perl` to `#!/usr/bin/env perl`
