@@ -54,22 +54,22 @@ Installation
 2. Make `cdf` executable.
 3. Add following config to your shell's rc file.
 
-| Shell      |                                                                               |
-|------------|-------------------------------------------------------------------------------|
-| sh         | eval "$(cdf -w)"                                                              |
-| ksh        | eval "$(cdf -w ksh)"                                                          |
-| bash       | eval "$(cdf -w bash)"                                                         |
-| zsh        | eval "$(cdf -w zsh)"                                                          |
-| yash       | eval "$(cdf -w yash)"                                                         |
-| fish       | source (cdf -w fish \| psub)                                                  |
-| tcsh       | cdf -w tcsh \| source /dev/stdin; true                                        |
-| rc         | ifs='' eval \`{cdf -w rc}                                                     |
-| nyagos     | lua\_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"                         |
-| xyzsh      | eval "$(sys::cdf -w xyzsh)"                                                   |
-| xonsh      | execx($(cdf -w xonsh))                                                        |
-| eshell     | (eval (car (read-from-string (shell-command-to-string "cdf -w eshell"))))     |
-| cmd        | perl cdf -w cmd > %homepath%\\.cdf.bat<br>doskey cdf=%homepath%\\.cdf.bat $\* |
-| powershell | Invoke-Expression (@(cdf -w powershell) -join "`n")                           |
+| Shell      |                                                                                           |
+|------------|-------------------------------------------------------------------------------------------|
+| sh         | eval "$(cdf -w)"                                                                          |
+| ksh        | eval "$(cdf -w ksh)"                                                                      |
+| bash       | eval "$(cdf -w bash)"                                                                     |
+| zsh        | eval "$(cdf -w zsh)"                                                                      |
+| yash       | eval "$(cdf -w yash)"                                                                     |
+| fish       | source (cdf -w fish \| psub)                                                              |
+| tcsh       | cdf -w tcsh \| source /dev/stdin; true                                                    |
+| rc         | ifs='' eval \`{cdf -w rc}                                                                 |
+| nyagos     | lua\_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"                                     |
+| xyzsh      | eval "$(sys::cdf -w xyzsh)"                                                               |
+| xonsh      | execx($(cdf -w xonsh))                                                                    |
+| eshell     | (eval (car (read-from-string (shell-command-to-string "cdf -w eshell"))))                 |
+| cmd        | perl {{path to cdf}} -w cmd > %homepath%\\.cdf.bat<br>doskey cdf=%homepath%\\.cdf.bat $\* |
+| powershell | Invoke-Expression (@(perl {{path to cdf}} -w powershell) -join "`n")                      |
 
 ### Example
 
@@ -205,11 +205,11 @@ $ execx($(cdf -w xonsh))
 $ (eval (car (read-from-string (shell-command-to-string "cdf -w eshell"))))
 (Enable the shell integration for eshell)
 
-$ perl cdf -w cmd > %homepath%\.cdf.bat
+$ perl {{path to cdf}} -w cmd > %homepath%\.cdf.bat
 $ doskey cdf=%homepath%\.cdf.bat $*
 (Enable the shell integration for cmd)
 
-$ Invoke-Expression (@(cdf -w powershell) -join "`n")
+$ Invoke-Expression (@(perl {{path to cdf}} -w powershell) -join "`n")
 (Enable the shell integration for powershell)
 ```
 
