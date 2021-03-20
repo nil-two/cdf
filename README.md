@@ -1,7 +1,7 @@
 cdf
 ===
 
-[![Build Status](https://travis-ci.org/kusabashira/cdf.svg?branch=master)](https://travis-ci.org/kusabashira/cdf)
+![CI](https://github.com/kusabashira/cdp/workflows/CI/badge.svg)
 
 Chdir to the favorite directory.
 
