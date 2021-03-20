@@ -61,7 +61,7 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -a: output error if CDFFILE doesn'"'"'t exist' {
+@test 'cdf -a: output error if CDFFILE does not exist' {
   check "$cdf" -a
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
@@ -81,7 +81,7 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -g: output error if the label doesn'"'"'t exist' {
+@test 'cdf -g: output error if the label does not exist' {
   printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
 
   check "$cdf" -g aaa
@@ -89,7 +89,7 @@ check() {
   [[ $(cat "$stdout") == "one" ]]
 }
 
-@test 'cdf -g: output error if CDFFILE doesn'"'"'t exist' {
+@test 'cdf -g: output error if CDFFILE doesn not exist' {
   rm -f -- "$CDFFILE"
 
   check "$cdf" -g aaa
@@ -111,7 +111,7 @@ check() {
   [[ $(cat "$stdout") == "" ]]
 }
 
-@test 'cdf -l: output error if CDFFILE doesn'"'"'t exist' {
+@test 'cdf -l: output error if CDFFILE doesn not exist' {
   rm -f -- "$CDFFILE"
 
   check "$cdf" -l
@@ -135,7 +135,7 @@ check() {
   [[ $(cat "$exitcode") == 0 ]]
 }
 
-@test 'cdf -r: remove the label even if the label doesn'"'"'t exist' {
+@test 'cdf -r: remove the label even if the label doesn not exist' {
   printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
 
   check "$cdf" -r ccc
@@ -148,7 +148,7 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -r: output error if CDFFILE doesn'"'"'t exist' {
+@test 'cdf -r: output error if CDFFILE doesn not exist' {
   rm -f -- "$CDFFILE"
 
   check "$cdf" -r fn
