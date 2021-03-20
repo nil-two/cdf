@@ -133,4 +133,4 @@ check() {
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
-# vim: ft=sh
+# vim: ft=bash

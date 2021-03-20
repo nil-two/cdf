@@ -55,4 +55,4 @@ check() {
   [[ $(cat "$stderr") =~ ^'cdf: shell integration not enabled' ]]
 }
 
-# vim: ft=sh
+# vim: ft=bash

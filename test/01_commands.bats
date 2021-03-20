@@ -180,4 +180,4 @@ check() {
   [[ $(cat "$stdout") =~ ^usage ]]
 }
 
-# vim: ft=sh
+# vim: ft=bash
