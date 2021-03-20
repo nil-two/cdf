@@ -1,7 +1,7 @@
 cdf
 ===
 
-![CI](https://github.com/kusabashira/cdp/workflows/CI/badge.svg)
+![CI](https://github.com/kusabashira/cdf/workflows/CI/badge.svg)
 
 Chdir to the favorite directory.
 
