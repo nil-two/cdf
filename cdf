@@ -15,13 +15,8 @@ if ($^O eq "MSWin32") {
 
 my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xyzsh xonsh eshell cmd powershell)];
 
-my $cmd_name;
-if ($^O eq "MSWin32") {
-    $cmd_name = basename($0);
-} else {
-    $cmd_name = $0 =~ s/.*\///r;
-}
-my $usage = <<EOF;
+my $cmd_name  = basename($0);
+my $cmd_usage = <<EOF;
 usage:
   $cmd_name [--] <label>         # chdir to the path so labeled
   $cmd_name -a <label> [<path>]  # save the path with the label
@@ -56,7 +51,7 @@ sub write_file {
 
 sub main {
     if ((@ARGV == 0) || (@ARGV == 1 && $ARGV[0] eq "--")) {
-        print STDERR $usage;
+        print STDERR $cmd_usage;
         exit 1;
     }
     if (($ARGV[0] !~ /^-/) || (@ARGV > 1 && $ARGV[0] eq "--")) {
@@ -849,11 +844,11 @@ sub main {
 
     } elsif ($mode eq "-h") {
 
-        print $usage;
+        print $cmd_usage;
 
     } else {
 
-        print STDERR "$cmd_name: unrecognized command '$mode'\n";
+        print STDERR "$cmd_name: unrecognized option '$mode'\n";
         print STDERR "Try '$cmd_name -h' for more information.\n";
         exit 1;
 
