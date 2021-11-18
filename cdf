@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use autouse "Cwd" => qw(abs_path getcwd);
+use autouse "Encode" => qw(decode_utf8);
 use autouse "File::Basename" => qw(basename dirname);
 use autouse "File::Path" => qw(make_path);
 use autouse "JSON::PP" => qw(encode_json decode_json);
@@ -50,6 +51,9 @@ sub write_file {
 }
 
 sub main {
+    foreach (@ARGV) {
+        $_ = decode_utf8($_);
+    }
     if ((@ARGV == 0) || (@ARGV == 1 && $ARGV[0] eq "--")) {
         print STDERR $cmd_usage;
         exit 1;
