@@ -1,3 +1,7 @@
+### v2.7.4 - 2021-11-18
+
+- Allow multibyte arguments
+
 ### v2.7.3 - 2020-07-12
 
 - Support Windows powershell
