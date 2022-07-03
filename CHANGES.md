@@ -1,3 +1,7 @@
+### v2.7.5 - 2022-07-03
+
+- Remove depends to command command in tcsh, rc, nyagos and xonsh
+
 ### v2.7.4 - 2021-11-18
 
 - Allow multibyte arguments
