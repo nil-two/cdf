@@ -1,3 +1,7 @@
+### v2.8.0 - 2022-07-03
+
+- Remove true requirements after loading in tcsh.
+
 ### v2.7.5 - 2022-07-03
 
 - Remove depends to command command in tcsh, rc, nyagos and xonsh.
