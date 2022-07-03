@@ -1,28 +1,28 @@
 ### v2.7.5 - 2022-07-03
 
-- Remove depends to command command in tcsh, rc, nyagos and xonsh
+- Remove depends to command command in tcsh, rc, nyagos and xonsh.
 
 ### v2.7.4 - 2021-11-18
 
-- Allow multibyte arguments
+- Allow multibyte arguments.
 
 ### v2.7.3 - 2020-07-12
 
-- Support Windows powershell
-- Remove powershell-completion to support Windows powershell
+- Support Windows powershell.
+- Remove powershell-completion to support Windows powershell.
 
 ### v2.7.2 - 2020-02-22
 
-- Change shebang from `#!/usr/bin/perl` to `#!/usr/bin/env perl`
-- Fix broken ksh-wrapper
+- Change shebang from `#!/usr/bin/perl` to `#!/usr/bin/env perl`.
+- Fix broken ksh-wrapper.
 
 ### v2.7.1 - 2020-02-22
 
-- Support Bash3.x
+- Support Bash3.x.
 
 ### v2.7.0 - 2019-05-18
 
-- Support xyzsh
+- Support xyzsh.
 
 ### v2.6.1 - 2019-05-18
 
