@@ -589,7 +589,7 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             fn cdf {
                 if ({~ \$#* 0} || {~ \$#* 1 && ~ \$1 '--'} || {test \$#* -ge 1 && ~ \$1 -* && ! ~ \$1 '--'}) {
-                    command -- cdf \$*
+                    env cdf \$*
                     return
                 }
 
@@ -597,7 +597,7 @@ sub main {
                     shift
                 }
 
-                ifs='' nextpath=`{command -- cdf -g \$1 | awk 'NR==1{l=\$0;while(getline){print l;l=\$0};printf"%s",l}'} if (test -n \$nextpath) {
+                ifs='' nextpath=`{env cdf -g \$1 | awk 'NR==1{l=\$0;while(getline){print l;l=\$0};printf"%s",l}'} if (test -n \$nextpath) {
                     cd \$nextpath
                 }
             }
@@ -606,7 +606,7 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             nyagos.alias.cdf = function(args)
                 if (#args == 0) or (#args == 1 and args[1] == "--") or (#args >= 1 and args[1]:match([[^-]]) and args[1] ~= "--") then
-                    nyagos.exec({"command", "--", "cdf", unpack(args)})
+                    nyagos.exec({"env", "cdf", unpack(args)})
                     return
                 end
 
@@ -616,7 +616,7 @@ sub main {
 
                 local label        = args[1]
                 local quoted_label = "'" .. label:gsub([[']], [['"'"']]) .. "'"
-                local next_path    = nyagos.eval("command -- cdf -g " .. quoted_label)
+                local next_path    = nyagos.eval("env cdf -g " .. quoted_label)
                 if next_path ~= nil and next_path ~= "" then
                     nyagos.chdir(next_path)
                 end
@@ -636,24 +636,24 @@ sub main {
                     if cur:match([[^-]]) then
                         return {"--", "-a", "-g", "-l", "-r", "-w", "-h"}
                     else
-                        return to_lines(nyagos.eval("command -- cdf -l"))
+                        return to_lines(nyagos.eval("env cdf -l"))
                     end
                 else
                     local cmd = args[2]
                     if cmd == "--" then
-                        return to_lines(nyagos.eval("command -- cdf -l"))
+                        return to_lines(nyagos.eval("env cdf -l"))
                     elseif cmd == "-a" then
                         if #args == 3 then
-                            return to_lines(nyagos.eval("command -- cdf -l"))
+                            return to_lines(nyagos.eval("env cdf -l"))
                         else
                             return nil
                         end
                     elseif cmd == "-g" then
-                        return to_lines(nyagos.eval("command -- cdf -l"))
+                        return to_lines(nyagos.eval("env cdf -l"))
                     elseif cmd == "-l" then
                         return {}
                     elseif cmd == "-r" then
-                        return to_lines(nyagos.eval("command -- cdf -l"))
+                        return to_lines(nyagos.eval("env cdf -l"))
                     elseif cmd == "-w" then
                         return nyagos.fields("@$supported_shells")
                     elseif cmd == "-h" then
@@ -695,13 +695,13 @@ sub main {
             print <<"            EOF" =~ s/^ {12}//gmr;
             def __cdf(args):
                 if (len(args) == 0) or (len(args) == 1 and args[0] == "--") or (len(args) >= 1 and args[0].startswith("-") and args[0] != "--"):
-                    command -- cdf @(args)
+                    env cdf @(args)
                     return
 
                 if (args[0] == "--"):
                     args.pop(0)
 
-                nextpath = ''.join(!(command -- cdf -g @(args[0]))).strip()
+                nextpath = ''.join(!(env cdf -g @(args[0]))).strip()
                 if nextpath != "":
                     cd @(nextpath)
 
@@ -725,20 +725,20 @@ sub main {
                         if prefix.startswith("-"):
                             raw_comps += ["--", "-a", "-g", "-l", "-r", "-w", "-h"]
                         else:
-                            raw_comps += \$(command -- cdf -l).strip().split("\\n")
+                            raw_comps += \$(env cdf -l).strip().split("\\n")
                     else:
                         if words[1] == "--":
-                            raw_comps += \$(command -- cdf -l).strip().split("\\n")
+                            raw_comps += \$(env cdf -l).strip().split("\\n")
                         elif words[1] == "-a":
                             if len(words) == 3:
-                                raw_comps += \$(command -- cdf -l).strip().split("\\n")
+                                raw_comps += \$(env cdf -l).strip().split("\\n")
                             else:
                                 comps, lp = complete_dir(prefix, line, start, end, ctx, True)
                                 completed = True
                         elif words[1] == "-g":
-                            raw_comps += \$(command -- cdf -l).strip().split("\\n")
+                            raw_comps += \$(env cdf -l).strip().split("\\n")
                         elif words[1] == "-r":
-                            raw_comps += \$(command -- cdf -l).strip().split("\\n")
+                            raw_comps += \$(env cdf -l).strip().split("\\n")
                         elif words[1] == "-w":
                             raw_comps += [@{[join ", ", map { "\"$_\"" } @$supported_shells]}]
 
