@@ -584,6 +584,7 @@ sub main {
             '"'"'\\\\
             '
             complete cdf 'p/*/`__cdfcomplete`/'
+            true
             EOF
         } elsif ($type eq "rc") {
             print <<"            EOF" =~ s/^ {12}//gmr;
