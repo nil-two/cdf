@@ -1,7 +1,7 @@
 cdf
 ===
 
-![CI](https://github.com/kusabashira/cdf/workflows/CI/badge.svg)
+![CI](https://github.com/nil2nekoni/cdf/workflows/CI/badge.svg)
 
 Chdir to the favorite directory.
 
@@ -74,7 +74,7 @@ Installation
 ### Example
 
 ```
-$ curl -L https://raw.githubusercontent.com/kusabashira/cdf/master/cdf > ~/bin/cdf
+$ curl -L https://raw.githubusercontent.com/nil2nekoni2/cdf/master/cdf > ~/bin/cdf
 $ chmod +x ~/bin/cdf
 $ echo 'eval "$(cdf -w bash)"' >> ~/.bashrc
 ```
