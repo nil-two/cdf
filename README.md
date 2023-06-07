@@ -37,8 +37,7 @@ usage:
   cdf -h                   # print usage
 
 supported-shells:
-  sh, ksh, bash, zsh, yash, fish, tcsh, rc,
-  nyagos, xyzsh, xonsh, eshell, cmd, powershell
+  sh, bash, zsh, fish
 
 environment-variables:
   CDF_REGISTRY  # the registry path (default: ~/.config/cdf/registry.json)
@@ -57,22 +56,12 @@ Installation
 2. Make `cdf` executable.
 3. Add following config to your shell's rc file.
 
-| Shell      |                                                                                           |
-|------------|-------------------------------------------------------------------------------------------|
-| sh         | eval "$(cdf -w)"                                                                          |
-| ksh        | eval "$(cdf -w ksh)"                                                                      |
-| bash       | eval "$(cdf -w bash)"                                                                     |
-| zsh        | eval "$(cdf -w zsh)"                                                                      |
-| yash       | eval "$(cdf -w yash)"                                                                     |
-| fish       | source (cdf -w fish \| psub)                                                              |
-| tcsh       | cdf -w tcsh \| source /dev/stdin                                                          |
-| rc         | ifs='' eval \`{cdf -w rc}                                                                 |
-| nyagos     | lua\_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"                                     |
-| xyzsh      | eval "$(sys::cdf -w xyzsh)"                                                               |
-| xonsh      | execx($(cdf -w xonsh))                                                                    |
-| eshell     | (eval (car (read-from-string (shell-command-to-string "cdf -w eshell"))))                 |
-| cmd        | perl {{path to cdf}} -w cmd > %homepath%\\.cdf.bat<br>doskey cdf=%homepath%\\.cdf.bat $\* |
-| powershell | Invoke-Expression (@(perl {{path to cdf}} -w powershell) -join "`n")                      |
+| Shell |                              |
+|-------|------------------------------|
+| sh    | eval "$(cdf -w)"             |
+| bash  | eval "$(cdf -w bash)"        |
+| zsh   | eval "$(cdf -w zsh)"         |
+| fish  | source (cdf -w fish \| psub) |
 
 ### Example
 
@@ -157,26 +146,13 @@ If shell specified, it outputs wrapper script optimized for the shell.
 Supported shells are as follows:
 
 - sh
-- ksh
 - bash
 - zsh
-- yash
 - fish
-- tcsh
-- rc
-- nyagos
-- xyzsh
-- xonsh
-- eshell
-- cmd
-- powershell
 
 ```
 $ eval "$(cdf -w)"
 (Enable the shell integration for the shell compatible with Bourne Shell)
-
-$ eval "$(cdf -w ksh)"
-(Enable the shell integration for ksh)
 
 $ eval "$(cdf -w bash)"
 (Enable the shell integration for bash)
@@ -184,36 +160,8 @@ $ eval "$(cdf -w bash)"
 $ eval "$(cdf -w zsh)"
 (Enable the shell integration for zsh)
 
-$ eval "$(cdf -w yash)"
-(Enable the shell integration for yash)
-
 $ source (cdf -w fish | psub)
 (Enable the shell integration for fish)
-
-$ cdf -w tcsh | source /dev/stdin
-(Enable the shell integration for tcsh)
-
-$ ifs='' eval `{cdf -w rc}
-(Enable the shell integration for rc)
-
-$ lua_e "loadstring(nyagos.eval(""cdf -w nyagos""))()"
-(Enable the shell integration for nyagos)
-
-$ eval "$(sys::cdf -w xyzsh)"
-(Enable the shell integration for xyzsh)
-
-$ execx($(cdf -w xonsh))
-(Enable the shell integration for xonsh)
-
-$ (eval (car (read-from-string (shell-command-to-string "cdf -w eshell"))))
-(Enable the shell integration for eshell)
-
-$ perl {{path to cdf}} -w cmd > %homepath%\.cdf.bat
-$ doskey cdf=%homepath%\.cdf.bat $*
-(Enable the shell integration for cmd)
-
-$ Invoke-Expression (@(perl {{path to cdf}} -w powershell) -join "`n")
-(Enable the shell integration for powershell)
 ```
 
 ### cdf -h
