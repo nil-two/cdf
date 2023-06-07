@@ -7,11 +7,11 @@ use autouse "File::Basename" => qw(basename dirname);
 use autouse "File::Path" => qw(make_path);
 use autouse "JSON::PP" => qw(encode_json decode_json);
 
-my $CDFFILE;
+my $CDF_REGISTRY;
 if ($^O eq "MSWin32") {
-    $CDFFILE = $ENV{CDFFILE} // "$ENV{homepath}/.config/cdf/cdf.json";
+    $CDF_REGISTRY = $ENV{CDF_REGISTRY} // "$ENV{homepath}/.config/cdf/registry.json";
 } else {
-    $CDFFILE = $ENV{CDFFILE} // "$ENV{HOME}/.config/cdf/cdf.json";
+    $CDF_REGISTRY = $ENV{CDF_REGISTRY} // "$ENV{HOME}/.config/cdf/registry.json";
 }
 
 my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xyzsh xonsh eshell cmd powershell)];
@@ -32,7 +32,7 @@ supported-shells:
   nyagos, xyzsh, xonsh, eshell, cmd, powershell
 
 environment-variables:
-  CDFFILE  # the registry path (default: ~/.config/cdf/cdf.json)
+  CDF_REGISTRY  # the registry path (default: ~/.config/cdf/registry.json)
 EOF
 
 sub read_file {
@@ -77,24 +77,24 @@ sub main {
             print STDERR "$cmd_name: $mode: no input name\n";
             exit 1;
         }
-        if (-e $CDFFILE && ! -f $CDFFILE) {
-            print STDERR "$cmd_name: $mode: \$CDFFILE should be a file\n";
+        if (-e $CDF_REGISTRY && ! -f $CDF_REGISTRY) {
+            print STDERR "$cmd_name: $mode: \$CDF_REGISTRY should be a file\n";
             exit 1;
         }
 
         my $label = $ARGV[0];
         my $path  = $ARGV[1] // getcwd;
 
-        if (! -e $CDFFILE) {
-            make_path(dirname($CDFFILE));
-            write_file($CDFFILE, "{}\n");
+        if (! -e $CDF_REGISTRY) {
+            make_path(dirname($CDF_REGISTRY));
+            write_file($CDF_REGISTRY, "{}\n");
         }
 
-        my $pathes = decode_json(read_file($CDFFILE));
+        my $pathes = decode_json(read_file($CDF_REGISTRY));
 
         $pathes->{$label} = abs_path($path);
 
-        write_file($CDFFILE, encode_json($pathes) . "\n");
+        write_file($CDF_REGISTRY, encode_json($pathes) . "\n");
 
     } elsif ($mode eq "-g") {
 
@@ -102,14 +102,14 @@ sub main {
             print STDERR "$cmd_name: $mode: no input name\n";
             exit 1;
         }
-        if (! -e $CDFFILE) {
-            print STDERR "$cmd_name: $mode: \$CDFFILE doesn't exists\n";
+        if (! -e $CDF_REGISTRY) {
+            print STDERR "$cmd_name: $mode: \$CDF_REGISTRY doesn't exists\n";
             exit 1;
         }
 
         my $label = $ARGV[0];
 
-        my $pathes = decode_json(read_file($CDFFILE));
+        my $pathes = decode_json(read_file($CDF_REGISTRY));
 
         if (exists $pathes->{$label}) {
             print "$pathes->{$label}\n";
@@ -120,12 +120,12 @@ sub main {
 
     } elsif ($mode eq "-l") {
 
-        if (! -e $CDFFILE) {
-            print STDERR "$cmd_name: $mode: \$CDFFILE doesn't exists\n";
+        if (! -e $CDF_REGISTRY) {
+            print STDERR "$cmd_name: $mode: \$CDF_REGISTRY doesn't exists\n";
             exit 1;
         }
 
-        my $pathes = decode_json(read_file($CDFFILE));
+        my $pathes = decode_json(read_file($CDF_REGISTRY));
 
         for my $label (sort { $a cmp $b } keys %$pathes) {
             print "$label\n";
@@ -137,20 +137,20 @@ sub main {
             print STDERR "$cmd_name: $mode: no input name\n";
             exit 1;
         }
-        if (! -e $CDFFILE) {
-            print STDERR "$cmd_name: $mode: \$CDFFILE doesn't exists\n";
+        if (! -e $CDF_REGISTRY) {
+            print STDERR "$cmd_name: $mode: \$CDF_REGISTRY doesn't exists\n";
             exit 1;
         }
 
         my $labels = [@ARGV];
 
-        my $pathes = decode_json(read_file($CDFFILE));
+        my $pathes = decode_json(read_file($CDF_REGISTRY));
 
         for my $label (@$labels) {
             delete $pathes->{$label};
         }
 
-        write_file($CDFFILE, encode_json($pathes) . "\n");
+        write_file($CDF_REGISTRY, encode_json($pathes) . "\n");
 
     } elsif ($mode eq "-w") {
 

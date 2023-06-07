@@ -39,7 +39,7 @@ supported-shells:
   nyagos, xyzsh, xonsh, eshell, cmd, powershell
 
 environment-variables:
-  CDFFILE  # the registry path (default: ~/.config/cdf/cdf.json)
+  CDF_REGISTRY  # the registry path (default: ~/.config/cdf/registry.json)
 ```
 
 Requirements
@@ -225,18 +225,21 @@ $ cdf -h
 Variables
 ---------
 
-### CDFFILE
+### `CDF_REGISTRY`
 
 The path of the registry file.
-Default value is `$HOME/.config/cdf/cdf.json`.
+Default value is `$HOME/.config/cdf/registry.json`.
 
 The structure of JSON is as follows:
 
 ```
 {
-  "<label1>": "<path1>",
-  "<label2>": "<path2>",
-  ...
+  "version": "<registry-version>",
+  "pathes": {
+    "<label1>": "<path1>",
+    "<label2>": "<path2>",
+    ...
+  }
 }
 ```
 

@@ -8,10 +8,9 @@ readonly exitcode=$BATS_TEST_DIRNAME/../tmp/exitcode
 
 setup() {
   mkdir -p -- "$tmpdir"
-  export PATH=$PATH:$(dirname "$BATS_TEST_DIRNAME")
-  export PATH=$(printf "%s\n" "$PATH" | awk '{gsub(":", "\n"); print}' | paste -sd:)
-  export CDFFILE=$tmpdir/cdf.json
-  printf "%s\n" "{}" > "$CDFFILE"
+  export PATH=$(dirname "$BATS_TEST_DIRNAME"):$PATH
+  export CDF_REGISTRY=$tmpdir/registry.json
+  printf "%s\n" "{}" > "$CDF_REGISTRY"
 }
 
 teardown() {
@@ -26,7 +25,7 @@ check() {
 }
 
 @test 'cdf -a: save the path of current direcotry with label if label passed' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
 
   check "$cdf" -a ccc
   [[ $(cat "$exitcode") == 0 ]]
@@ -36,7 +35,7 @@ check() {
 }
 
 @test 'cdf -a: save the path with label if label and path passed' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
 
   check "$cdf" -a ccc /usr
   [[ $(cat "$exitcode") == 0 ]]
@@ -46,7 +45,7 @@ check() {
 }
 
 @test 'cdf -a: overwrite the path if the label already exists' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
 
   check "$cdf" -a aaa
   [[ $(cat "$exitcode") == 0 ]]
@@ -61,14 +60,14 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -a: output error if CDFFILE does not exist' {
+@test 'cdf -a: output error if CDF_REGISTRY does not exist' {
   check "$cdf" -a
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
 @test 'cdf -g: print the path so labeld' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
 
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 0 ]]
@@ -82,15 +81,15 @@ check() {
 }
 
 @test 'cdf -g: output error if the label does not exist' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
 
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "one" ]]
 }
 
-@test 'cdf -g: output error if CDFFILE doesn not exist' {
-  rm -f -- "$CDFFILE"
+@test 'cdf -g: output error if CDF_REGISTRY doesn not exist' {
+  rm -f -- "$CDF_REGISTRY"
 
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 1 ]]
@@ -98,7 +97,7 @@ check() {
 }
 
 @test 'cdf -l: list labels' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
 
   check "$cdf" -l
   [[ $(cat "$exitcode") == 0 ]]
@@ -111,8 +110,8 @@ check() {
   [[ $(cat "$stdout") == "" ]]
 }
 
-@test 'cdf -l: output error if CDFFILE doesn not exist' {
-  rm -f -- "$CDFFILE"
+@test 'cdf -l: output error if CDF_REGISTRY doesn not exist' {
+  rm -f -- "$CDF_REGISTRY"
 
   check "$cdf" -l
   [[ $(cat "$exitcode") == 1 ]]
@@ -120,7 +119,7 @@ check() {
 }
 
 @test 'cdf -r: remove labels' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\",\"ccc\":\"three\"}" > "$CDFFILE"
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\",\"ccc\":\"three\"}" > "$CDF_REGISTRY"
 
   check "$cdf" -r aaa bbb
   [[ $(cat "$exitcode") == 0 ]]
@@ -136,7 +135,7 @@ check() {
 }
 
 @test 'cdf -r: remove the label even if the label doesn not exist' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDFFILE"
+  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
 
   check "$cdf" -r ccc
   [[ $(cat "$exitcode") == 0 ]]
@@ -148,8 +147,8 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -r: output error if CDFFILE doesn not exist' {
-  rm -f -- "$CDFFILE"
+@test 'cdf -r: output error if CDF_REGISTRY doesn not exist' {
+  rm -f -- "$CDF_REGISTRY"
 
   check "$cdf" -r fn
   [[ $(cat "$exitcode") == 1 ]]

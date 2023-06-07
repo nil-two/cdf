@@ -8,10 +8,9 @@ readonly exitcode=$BATS_TEST_DIRNAME/../tmp/exitcode
 
 setup() {
   mkdir -p -- "$tmpdir"
-  export PATH=$PATH:$(dirname "$BATS_TEST_DIRNAME")
-  export PATH=$(printf "%s\n" "$PATH" | awk '{gsub(":", "\n"); print}' | paste -sd:)
-  export CDFFILE=$tmpdir/cdf.json
-  printf "%s\n" "{}" > "$CDFFILE"
+  export PATH=$(dirname "$BATS_TEST_DIRNAME"):$PATH
+  export CDF_REGISTRY=$tmpdir/registry.json
+  printf "%s\n" "{}" > "$CDF_REGISTRY"
 }
 
 teardown() {
