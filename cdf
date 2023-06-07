@@ -19,10 +19,12 @@ my $supported_shells = [qw(sh ksh bash zsh yash fish tcsh rc nyagos xyzsh xonsh 
 my $cmd_name  = basename($0);
 my $cmd_usage = <<EOF;
 usage:
-  $cmd_name [--] <label>         # chdir to the path so labeled
-  $cmd_name -a <label> [<path>]  # save the path with the label
-  $cmd_name -g <label>           # get the path so labeled
+  $cmd_name [--]                 # select label and chdir to the labeled path
+  $cmd_name [--] <label>         # chdir to the labeled path
+  $cmd_name -a <label> [<path>]  # label the path (default: working directory)
   $cmd_name -l                   # list labels
+  $cmd_name -L                   # list labels with pathes
+  $cmd_name -p <label>           # print the labeled path
   $cmd_name -r <label(s)>        # remove labels
   $cmd_name -w [<shell>]         # output the wrapper script (default: sh)
   $cmd_name -h                   # print usage
@@ -33,6 +35,7 @@ supported-shells:
 
 environment-variables:
   CDF_REGISTRY  # the registry path (default: ~/.config/cdf/registry.json)
+  CDF_FILTER    # the intractive filtering command for selecting label
 EOF
 
 sub read_file {

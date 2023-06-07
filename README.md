@@ -26,10 +26,12 @@ Usage
 
 ```
 usage:
-  cdf [--] <label>         # chdir to the path so labeled
-  cdf -a <label> [<path>]  # save the path with the label
-  cdf -g <label>           # get the path so labeled
+  cdf [--]                 # select label and chdir to the labeled path
+  cdf [--] <label>         # chdir to the labeled path
+  cdf -a <label> [<path>]  # label the path (default: working directory)
   cdf -l                   # list labels
+  cdf -L                   # list labels with pathes
+  cdf -p <label>           # print the labeled path
   cdf -r <label(s)>        # remove labels
   cdf -w [<shell>]         # output the wrapper script (default: sh)
   cdf -h                   # print usage
@@ -40,6 +42,7 @@ supported-shells:
 
 environment-variables:
   CDF_REGISTRY  # the registry path (default: ~/.config/cdf/registry.json)
+  CDF_FILTER    # the intractive filtering command for selecting label
 ```
 
 Requirements
