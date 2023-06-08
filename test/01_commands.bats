@@ -10,7 +10,7 @@ setup() {
   mkdir -p -- "$tmpdir"
   export PATH=$(dirname "$BATS_TEST_DIRNAME"):$PATH
   export CDF_REGISTRY=$tmpdir/registry.json
-  printf "%s\n" "{}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{}}" > "$CDF_REGISTRY"
 }
 
 teardown() {
@@ -25,7 +25,7 @@ check() {
 }
 
 @test 'cdf -a: save the path of current direcotry with label if label passed' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
 
   check "$cdf" -a ccc
   [[ $(cat "$exitcode") == 0 ]]
@@ -35,7 +35,7 @@ check() {
 }
 
 @test 'cdf -a: save the path with label if label and path passed' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
 
   check "$cdf" -a ccc /usr
   [[ $(cat "$exitcode") == 0 ]]
@@ -45,7 +45,7 @@ check() {
 }
 
 @test 'cdf -a: overwrite the path if the label already exists' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
 
   check "$cdf" -a aaa
   [[ $(cat "$exitcode") == 0 ]]
@@ -67,7 +67,7 @@ check() {
 }
 
 @test 'cdf -g: print the path so labeld' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
 
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 0 ]]
@@ -81,7 +81,7 @@ check() {
 }
 
 @test 'cdf -g: output error if the label does not exist' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
 
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 0 ]]
@@ -97,7 +97,7 @@ check() {
 }
 
 @test 'cdf -l: list labels' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
 
   check "$cdf" -l
   [[ $(cat "$exitcode") == 0 ]]
@@ -119,7 +119,7 @@ check() {
 }
 
 @test 'cdf -r: remove labels' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\",\"ccc\":\"three\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\",\"ccc\":\"three\"}}" > "$CDF_REGISTRY"
 
   check "$cdf" -r aaa bbb
   [[ $(cat "$exitcode") == 0 ]]
@@ -135,7 +135,7 @@ check() {
 }
 
 @test 'cdf -r: remove the label even if the label doesn not exist' {
-  printf "%s\n" "{\"aaa\":\"one\",\"bbb\":\"two\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
 
   check "$cdf" -r ccc
   [[ $(cat "$exitcode") == 0 ]]

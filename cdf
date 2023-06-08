@@ -15,6 +15,11 @@ if ($^O eq "MSWin32") {
 }
 
 my $supported_shells = [qw(sh bash zsh fish)];
+my $registry_version = "3.0";
+my $registry_initial_content = {
+    version => $registry_version,
+    labels => {},
+};
 
 my $cmd_name  = basename($0);
 my $cmd_usage = <<EOF;
@@ -89,14 +94,14 @@ sub main {
 
         if (! -e $CDF_REGISTRY) {
             make_path(dirname($CDF_REGISTRY));
-            write_file($CDF_REGISTRY, "{}\n");
+            write_file($CDF_REGISTRY, json_encode($registry_initial_content) . "\n");
         }
 
-        my $pathes = decode_json(read_file($CDF_REGISTRY));
+        my $registry = decode_json(read_file($CDF_REGISTRY));
 
-        $pathes->{$label} = abs_path($path);
+        $registry->{labels}{$label} = abs_path($path);
 
-        write_file($CDF_REGISTRY, encode_json($pathes) . "\n");
+        write_file($CDF_REGISTRY, encode_json($registry) . "\n");
 
     } elsif ($mode eq "-g") {
 
@@ -111,10 +116,10 @@ sub main {
 
         my $label = $ARGV[0];
 
-        my $pathes = decode_json(read_file($CDF_REGISTRY));
+        my $registry = decode_json(read_file($CDF_REGISTRY));
 
-        if (exists $pathes->{$label}) {
-            print "$pathes->{$label}\n";
+        if (exists $registry->{labels}{$label}) {
+            print "$registry->{labels}{$label}\n";
         } else {
             print STDERR "$cmd_name: $mode: $label: label not found\n";
             exit 1;
@@ -127,9 +132,9 @@ sub main {
             exit 1;
         }
 
-        my $pathes = decode_json(read_file($CDF_REGISTRY));
+        my $registry = decode_json(read_file($CDF_REGISTRY));
 
-        for my $label (sort { $a cmp $b } keys %$pathes) {
+        for my $label (sort { $a cmp $b } keys %{$registry->{labels}}) {
             print "$label\n";
         }
 
@@ -146,13 +151,13 @@ sub main {
 
         my $labels = [@ARGV];
 
-        my $pathes = decode_json(read_file($CDF_REGISTRY));
+        my $registry = decode_json(read_file($CDF_REGISTRY));
 
         for my $label (@$labels) {
-            delete $pathes->{$label};
+            delete $registry->{labels}{$label};
         }
 
-        write_file($CDF_REGISTRY, encode_json($pathes) . "\n");
+        write_file($CDF_REGISTRY, encode_json($registry) . "\n");
 
     } elsif ($mode eq "-w") {
 

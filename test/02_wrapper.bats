@@ -10,7 +10,7 @@ setup() {
   mkdir -p -- "$tmpdir"
   export PATH=$(dirname "$BATS_TEST_DIRNAME"):$PATH
   export CDF_REGISTRY=$tmpdir/registry.json
-  printf "%s\n" "{}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{}}" > "$CDF_REGISTRY"
 }
 
 teardown() {
@@ -26,7 +26,7 @@ check() {
 
 @test 'cdf supports sh' {
   ! command -v sh > /dev/null && skip
-  printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
 
   CDF=$cdf check sh -c 'eval "$("$CDF" -w); cdf usr; pwd"'
   [[ $(cat "$exitcode") == 0 ]]
@@ -35,7 +35,7 @@ check() {
 
 @test 'cdf supports bash' {
   ! command -v bash > /dev/null && skip
-  printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
 
   CDF=$cdf check bash -c 'eval "$("$CDF" -w bash); cdf usr; pwd"'
   [[ $(cat "$exitcode") == 0 ]]
@@ -44,7 +44,7 @@ check() {
 
 @test 'cdf supports zsh' {
   ! command -v zsh > /dev/null && skip
-  printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
 
   CDF=$cdf check zsh -c 'eval "$("$CDF" -w zsh); cdf usr; pwd"'
   [[ $(cat "$exitcode") == 0 ]]
@@ -53,7 +53,7 @@ check() {
 
 @test 'cdf supports fish' {
   ! command -v fish > /dev/null && skip
-  printf "%s\n" "{\"usr\":\"/usr\"}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
 
   CDF=$cdf check fish -c 'source (eval $CDF -w fish | psub); cdf usr; pwd'
   [[ $(cat "$exitcode") == 0 ]]
