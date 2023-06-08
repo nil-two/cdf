@@ -5,5 +5,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apt install bats
+    - run: sudo apt install bats zsh fish
     - run: make test
