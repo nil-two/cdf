@@ -24,37 +24,33 @@ check() {
   "$@" > "$stdout" 2> "$stderr" || printf "%s\n" "$?" > "$exitcode"
 }
 
-@test 'cdf supports sh' {
+@test 'cdf wapper: support sh' {
   ! command -v sh > /dev/null && skip
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
-
   CDF=$cdf check sh -c 'eval "$("$CDF" -w); cdf usr; pwd"'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
-@test 'cdf supports bash' {
+@test 'cdf wapper: support bash' {
   ! command -v bash > /dev/null && skip
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
-
   CDF=$cdf check bash -c 'eval "$("$CDF" -w bash); cdf usr; pwd"'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
-@test 'cdf supports zsh' {
+@test 'cdf wapper: support zsh' {
   ! command -v zsh > /dev/null && skip
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
-
   CDF=$cdf check zsh -c 'eval "$("$CDF" -w zsh); cdf usr; pwd"'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
-@test 'cdf supports fish' {
+@test 'cdf wapper: support fish' {
   ! command -v fish > /dev/null && skip
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
-
   CDF=$cdf check fish -c 'source (eval $CDF -w fish | psub); cdf usr; pwd'
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "/usr" ]]

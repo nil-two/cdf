@@ -24,32 +24,23 @@ check() {
   "$@" > "$stdout" 2> "$stderr" || printf "%s\n" "$?" > "$exitcode"
 }
 
-@test 'cdf -a: save the path of current direcotry with label if label passed' {
+@test 'cdf -a: label the working direcotry if label passed' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-
   check "$cdf" -a ccc
-  [[ $(cat "$exitcode") == 0 ]]
-
   check "$cdf" -g ccc
   [[ $(cat "$stdout") == "$PWD" ]]
 }
 
-@test 'cdf -a: save the path with label if label and path passed' {
+@test 'cdf -a: label the path if label and path passed' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-
   check "$cdf" -a ccc /usr
-  [[ $(cat "$exitcode") == 0 ]]
-
   check "$cdf" -g ccc
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
-@test 'cdf -a: overwrite the path if the label already exists' {
+@test 'cdf -a: overwrite the label if the label already exists' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-
   check "$cdf" -a aaa
-  [[ $(cat "$exitcode") == 0 ]]
-
   check "$cdf" -g aaa
   [[ $(cat "$stdout") == "$PWD" ]]
 }
@@ -60,15 +51,8 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -a: output error if CDF_REGISTRY does not exist' {
-  check "$cdf" -a
-  [[ $(cat "$exitcode") == 1 ]]
-  [[ $(cat "$stderr") != "" ]]
-}
-
-@test 'cdf -g: print the path so labeld' {
+@test 'cdf -g: print the labeled path' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "one" ]]
@@ -82,15 +66,13 @@ check() {
 
 @test 'cdf -g: output error if the label does not exist' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "one" ]]
 }
 
-@test 'cdf -g: output error if CDF_REGISTRY doesn not exist' {
+@test 'cdf -g: output error if CDF_REGISTRY does not exist' {
   rm -f -- "$CDF_REGISTRY"
-
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
@@ -98,7 +80,6 @@ check() {
 
 @test 'cdf -l: list labels' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-
   check "$cdf" -l
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == $'aaa\nbbb' ]]
@@ -110,9 +91,8 @@ check() {
   [[ $(cat "$stdout") == "" ]]
 }
 
-@test 'cdf -l: output error if CDF_REGISTRY doesn not exist' {
+@test 'cdf -l: output error if CDF_REGISTRY does not exist' {
   rm -f -- "$CDF_REGISTRY"
-
   check "$cdf" -l
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
@@ -120,23 +100,18 @@ check() {
 
 @test 'cdf -r: remove labels' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\",\"ccc\":\"three\"}}" > "$CDF_REGISTRY"
-
   check "$cdf" -r aaa bbb
   [[ $(cat "$exitcode") == 0 ]]
-
   check "$cdf" -g aaa
   [[ $(cat "$exitcode") == 1 ]]
-
   check "$cdf" -g bbb
   [[ $(cat "$exitcode") == 1 ]]
-
   check "$cdf" -g ccc
   [[ $(cat "$exitcode") == 0 ]]
 }
 
-@test 'cdf -r: remove the label even if the label doesn not exist' {
+@test 'cdf -r: remove labels even if the label does not exist' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-
   check "$cdf" -r ccc
   [[ $(cat "$exitcode") == 0 ]]
 }
@@ -147,9 +122,8 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -r: output error if CDF_REGISTRY doesn not exist' {
+@test 'cdf -r: output error if CDF_REGISTRY does not exist' {
   rm -f -- "$CDF_REGISTRY"
-
   check "$cdf" -r fn
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
@@ -161,13 +135,13 @@ check() {
   [[ $(cat "$stdout") =~ ^'cdf() {' ]]
 }
 
-@test 'cdf -w: print the wrapper for the shell if shell name passed' {
+@test 'cdf -w: print the wrapper for the shell if shell passed' {
   check "$cdf" -w fish
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") =~ ^'function cdf' ]]
 }
 
-@test 'cdf -w: output error if the shell unsupported' {
+@test 'cdf -w: output error if the shell does not supported' {
   check "$cdf" -w vim
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]

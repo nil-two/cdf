@@ -10,7 +10,7 @@ setup() {
   mkdir -p -- "$tmpdir"
   export PATH=$(dirname "$BATS_TEST_DIRNAME"):$PATH
   export CDF_REGISTRY=$tmpdir/registry.json
-  printf "%s\n" "{}" > "$CDF_REGISTRY"
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{}}" > "$CDF_REGISTRY"
 }
 
 teardown() {
@@ -30,25 +30,25 @@ check() {
   [[ $(cat "$stderr") =~ ^usage ]]
 }
 
-@test 'cdf: print usage if double dash passed' {
+@test 'cdf: print usage if double-dash passed' {
   check "$cdf" --
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^usage ]]
 }
 
-@test 'cdf: output message to use "cdf -h" if unknown command passed' {
+@test 'cdf: output guidance to use cdf -h if unknown command passed' {
   check "$cdf" --vim
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf: outputs guidance to use "cdf -w" if label passed' {
+@test 'cdf: output guidance to use cdf -w if label passed' {
   check "$cdf" fn
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^"cdf: shell integration not enabled" ]]
 }
 
-@test 'cdf: outputs guidance to use "cdf -w" if label passed with double dash' {
+@test 'cdf: output guidance to use cdf -w if label passed with double-dash' {
   check "$cdf" -- fn
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^'cdf: shell integration not enabled' ]]
