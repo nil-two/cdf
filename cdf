@@ -103,7 +103,19 @@ sub main {
 
         write_file($CDF_REGISTRY, encode_json($registry) . "\n");
 
-    } elsif ($mode eq "-g") {
+    } elsif ($mode eq "-l") {
+
+        if (! -e $CDF_REGISTRY) {
+            print STDERR "$cmd_name: $mode: \$CDF_REGISTRY doesn't exists\n";
+            exit 1;
+        }
+
+        my $registry = decode_json(read_file($CDF_REGISTRY));
+
+        for my $label (sort { $a cmp $b } keys %{$registry->{labels}}) {
+            print "$label\n";
+        }
+    } elsif ($mode eq "-p") {
 
         if (@ARGV < 1) {
             print STDERR "$cmd_name: $mode: no input name\n";
@@ -123,19 +135,6 @@ sub main {
         } else {
             print STDERR "$cmd_name: $mode: $label: label not found\n";
             exit 1;
-        }
-
-    } elsif ($mode eq "-l") {
-
-        if (! -e $CDF_REGISTRY) {
-            print STDERR "$cmd_name: $mode: \$CDF_REGISTRY doesn't exists\n";
-            exit 1;
-        }
-
-        my $registry = decode_json(read_file($CDF_REGISTRY));
-
-        for my $label (sort { $a cmp $b } keys %{$registry->{labels}}) {
-            print "$label\n";
         }
 
     } elsif ($mode eq "-r") {
@@ -181,7 +180,7 @@ sub main {
                     shift
                 fi
 
-                set -- "\$(command -- cdf -g "\$1")"
+                set -- "\$(command -- cdf -p "\$1")"
                 if [ -n "\$1" ]; then
                     cd "\$1" || return
                 fi
@@ -200,7 +199,7 @@ sub main {
                 fi
 
                 local nextpath
-                nextpath=\$(command -- cdf -g "\$1")
+                nextpath=\$(command -- cdf -p "\$1")
                 if [[ -n \$nextpath ]]; then
                     cd "\$nextpath" || return
                 fi
@@ -267,7 +266,7 @@ sub main {
                 fi
 
                 local nextpath
-                nextpath=\$(command -- cdf -g "\$1")
+                nextpath=\$(command -- cdf -p "\$1")
                 if [[ -n \$nextpath ]]; then
                     cd "\$nextpath" || return
                 fi
@@ -356,7 +355,7 @@ sub main {
                     set argv \$argv[2..-1]
                 end
 
-                set -l nextpath (command cdf -g \$argv[1])
+                set -l nextpath (command cdf -p \$argv[1])
                 if test -n "\$nextpath"
                     cd \$nextpath
                 end

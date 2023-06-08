@@ -27,21 +27,21 @@ check() {
 @test 'cdf -a: label the working direcotry if label passed' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -a ccc
-  check "$cdf" -g ccc
+  check "$cdf" -p ccc
   [[ $(cat "$stdout") == "$PWD" ]]
 }
 
 @test 'cdf -a: label the path if label and path passed' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -a ccc /usr
-  check "$cdf" -g ccc
+  check "$cdf" -p ccc
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
 @test 'cdf -a: overwrite the label if the label already exists' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -a aaa
-  check "$cdf" -g aaa
+  check "$cdf" -p aaa
   [[ $(cat "$stdout") == "$PWD" ]]
 }
 
@@ -51,41 +51,14 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -g: print the labeled path' {
-  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-  check "$cdf" -g aaa
-  [[ $(cat "$exitcode") == 0 ]]
-  [[ $(cat "$stdout") == "one" ]]
-}
-
-@test 'cdf -g: output error if no arguments passed' {
-  check "$cdf" -g
-  [[ $(cat "$exitcode") == 1 ]]
-  [[ $(cat "$stderr") != "" ]]
-}
-
-@test 'cdf -g: output error if the label does not exist' {
-  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
-  check "$cdf" -g aaa
-  [[ $(cat "$exitcode") == 0 ]]
-  [[ $(cat "$stdout") == "one" ]]
-}
-
-@test 'cdf -g: output error if CDF_REGISTRY does not exist' {
-  rm -f -- "$CDF_REGISTRY"
-  check "$cdf" -g aaa
-  [[ $(cat "$exitcode") == 1 ]]
-  [[ $(cat "$stderr") != "" ]]
-}
-
-@test 'cdf -l: list labels' {
-  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
+@test 'cdf -l: list sorted labels' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"ccc\":\"three\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -l
   [[ $(cat "$exitcode") == 0 ]]
-  [[ $(cat "$stdout") == $'aaa\nbbb' ]]
+  [[ $(cat "$stdout") == $'aaa\nbbb\nccc' ]]
 }
 
-@test 'cdf -l: list labels even if there is no labels' {
+@test 'cdf -l: list sorted labels even if there is no labels' {
   check "$cdf" -l
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "" ]]
@@ -98,15 +71,42 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
+@test 'cdf -p: print the labeled path' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
+  check "$cdf" -p aaa
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "one" ]]
+}
+
+@test 'cdf -p: output error if no arguments passed' {
+  check "$cdf" -p
+  [[ $(cat "$exitcode") == 1 ]]
+  [[ $(cat "$stderr") != "" ]]
+}
+
+@test 'cdf -p: output error if the label does not exist' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
+  check "$cdf" -p aaa
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "one" ]]
+}
+
+@test 'cdf -p: output error if CDF_REGISTRY does not exist' {
+  rm -f -- "$CDF_REGISTRY"
+  check "$cdf" -p aaa
+  [[ $(cat "$exitcode") == 1 ]]
+  [[ $(cat "$stderr") != "" ]]
+}
+
 @test 'cdf -r: remove labels' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\",\"ccc\":\"three\"}}" > "$CDF_REGISTRY"
   check "$cdf" -r aaa bbb
   [[ $(cat "$exitcode") == 0 ]]
-  check "$cdf" -g aaa
+  check "$cdf" -p aaa
   [[ $(cat "$exitcode") == 1 ]]
-  check "$cdf" -g bbb
+  check "$cdf" -p bbb
   [[ $(cat "$exitcode") == 1 ]]
-  check "$cdf" -g ccc
+  check "$cdf" -p ccc
   [[ $(cat "$exitcode") == 0 ]]
 }
 
