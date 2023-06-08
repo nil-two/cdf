@@ -71,6 +71,26 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
+@test 'cdf -L: list sorted labels and paths' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"ccc\":\"three\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
+  check "$cdf" -L
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == $'aaa\tone\nbbb\ttwo\nccc\tthree' ]]
+}
+
+@test 'cdf -L: list sorted labels even if there is no labels' {
+  check "$cdf" -L
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "" ]]
+}
+
+@test 'cdf -L: output error if CDF_REGISTRY does not exist' {
+  rm -f -- "$CDF_REGISTRY"
+  check "$cdf" -l
+  [[ $(cat "$exitcode") == 1 ]]
+  [[ $(cat "$stderr") != "" ]]
+}
+
 @test 'cdf -p: print the labeled path' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -p aaa

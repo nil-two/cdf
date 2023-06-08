@@ -115,6 +115,20 @@ sub main {
         for my $label (sort { $a cmp $b } keys %{$registry->{labels}}) {
             print "$label\n";
         }
+
+    } elsif ($mode eq "-L") {
+
+        if (! -e $CDF_REGISTRY) {
+            print STDERR "$cmd_name: $mode: \$CDF_REGISTRY doesn't exists\n";
+            exit 1;
+        }
+
+        my $registry = decode_json(read_file($CDF_REGISTRY));
+
+        for my $label (sort { $a cmp $b } keys %{$registry->{labels}}) {
+            printf "%s\t%s\n", $label, $registry->{labels}{$label};
+        }
+
     } elsif ($mode eq "-p") {
 
         if (@ARGV < 1) {
