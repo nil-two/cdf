@@ -68,7 +68,7 @@ sub main {
     if (($ARGV[0] !~ /^-/) || (@ARGV > 1 && $ARGV[0] eq "--")) {
         print STDERR <<"        EOF" =~ s/^ {8}//gmr;
         $cmd_name: shell integration not enabled
-        Please add following line to your shell's rc file.
+        Please add following line to your shell's rcfile.
 
         command -v $cmd_name > /dev/null && eval "\$($cmd_name -w)"
 

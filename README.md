@@ -54,7 +54,7 @@ Installation
 
 1. Copy `cdf` into your `$PATH`.
 2. Make `cdf` executable.
-3. Add following config to your shell's rc file.
+3. Add following config to your shell's rcfile.
 
 | Shell |                              |
 |-------|------------------------------|
