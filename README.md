@@ -26,22 +26,22 @@ Usage
 
 ```
 usage:
-  cdf [--]                 # select label and chdir to the labeled path
-  cdf [--] <label>         # chdir to the labeled path
-  cdf -a <label> [<path>]  # label the path (default: working directory)
-  cdf -l                   # list labels
-  cdf -L                   # list labels with paths
-  cdf -p <label>           # print the labeled path
-  cdf -r <label(s)>        # remove labels
-  cdf -w [<shell>]         # output the wrapper script (default: sh)
-  cdf -h                   # print usage
+  cdf [--]                         # select label and chdir to the labeled path
+  cdf [--] <label>                 # chdir to the labeled path
+  cdf {-a|--add} <label> [<path>]  # label the path (default: working directory)
+  cdf {-l|--list}                  # list labels
+  cdf {-L|--list-with-paths}       # list labels with paths
+  cdf {-p|--print} <label>         # print the labeled path
+  cdf {-r|--remote} <label(s)>     # remove labels
+  cdf {-w|--wrapper} [<shell>]     # output the wrapper script (default: sh)
+  cdf --help                       # print usage
 
 supported-shells:
-  sh, bash, zsh, fish
+  sh, bash
 
 environment-variables:
-  CDF_REGISTRY  # the registry path (default: ~/.config/cdf/registry.json)
-  CDF_FILTER    # the intractive filtering command for selecting label
+  CDF_REGISTRY  the registry path (default: ~/.config/cdf/registry.json)
+  CDF_FILTER    the intractive filtering command for selecting label
 ```
 
 Requirements
@@ -186,7 +186,7 @@ The structure of JSON is as follows:
 ```
 {
   "version": "<registry-version>",
-  "paths": {
+  "labels": {
     "<label1>": "<path1>",
     "<label2>": "<path2>",
     ...

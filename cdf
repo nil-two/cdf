@@ -14,7 +14,7 @@ if ($^O eq "MSWin32") {
     $CDF_REGISTRY = $ENV{CDF_REGISTRY} // "$ENV{HOME}/.config/cdf/registry.json";
 }
 
-my $supported_shells = [qw(sh bash zsh fish)];
+my $supported_shells = [qw(sh bash)];
 my $registry_version = "3.0";
 my $registry_initial_content = {
     version => $registry_version,
@@ -24,15 +24,15 @@ my $registry_initial_content = {
 my $cmd_name  = basename($0);
 my $cmd_usage = <<EOF;
 usage:
-  $cmd_name [--]                 # select label and chdir to the labeled path
-  $cmd_name [--] <label>         # chdir to the labeled path
-  $cmd_name -a <label> [<path>]  # label the path (default: working directory)
-  $cmd_name -l                   # list labels
-  $cmd_name -L                   # list labels with paths
-  $cmd_name -p <label>           # print the labeled path
-  $cmd_name -r <label(s)>        # remove labels
-  $cmd_name -w [<shell>]         # output the wrapper script (default: sh)
-  $cmd_name -h                   # print usage
+  $cmd_name [--]                         # select label and chdir to the labeled path
+  $cmd_name [--] <label>                 # chdir to the labeled path
+  $cmd_name {-a|--add} <label> [<path>]  # label the path (default: working directory)
+  $cmd_name {-l|--list}                  # list labels
+  $cmd_name {-L|--list-with-paths}       # list labels with paths
+  $cmd_name {-p|--print} <label>         # print the labeled path
+  $cmd_name {-r|--remote} <label(s)>     # remove labels
+  $cmd_name {-w|--wrapper} [<shell>]     # output the wrapper script (default: sh)
+  $cmd_name --help                       # print usage
 
 supported-shells:
   @{[join(", ", @$supported_shells)]}
@@ -266,155 +266,6 @@ sub main {
                 esac
             }
             complete -F _cdf cdf
-            EOF
-        } elsif ($type eq "zsh") {
-            print <<"            EOF" =~ s/^ {12}//gmr;
-            cdf() {
-                if [[ \$# -eq 0 || ( \$# -eq 1 && \$1 = -- ) || ( \$# -ge 1 && \$1 = -* && \$1 != -- ) ]]; then
-                    command -- cdf "\$@"
-                    return
-                fi
-
-                if [[ \$1 = -- ]]; then
-                    shift
-                fi
-
-                local nextpath
-                nextpath=\$(command -- cdf -p "\$1")
-                if [[ -n \$nextpath ]]; then
-                    cd "\$nextpath" || return
-                fi
-            }
-
-            _cdf() {
-                local cur=\${words[\$CURRENT]}
-                local commands labels
-                case \$CURRENT in
-                    2)
-                        case \$cur in
-                            -*)
-                                commands=(
-                                "--[chdir to the path so labeled]"
-                                "-a[save the path with the label]"
-                                "-g[get the path so labeled]"
-                                "-l[list labels]"
-                                "-r[remove labels]"
-                                "-w[output the wrapper script]"
-                                "-h[print usage]"
-                                )
-                                _values "command" \$commands
-                                ;;
-                            *)
-                                labels=( \${(f)"\$(cdf -l)"} )
-                                _describe "label" labels
-                                ;;
-                        esac
-                        ;;
-                    *)
-                        local mode=\${words[2]}
-                        case \$mode in
-                            --)
-                                labels=( \${(f)"\$(cdf -l)"} )
-                                _describe "label" labels
-                                ;;
-                            -a)
-                                case \$CURRENT in
-                                    3)
-                                      labels=( \${(f)"\$(cdf -l)"} )
-                                      _describe "label" labels
-                                      ;;
-                                    *)
-                                      _path_files -/
-                                      ;;
-                                esac
-                                ;;
-                            -g)
-                                labels=( \${(f)"\$(cdf -l)"} )
-                                _describe "label" labels
-                                ;;
-                            -l)
-                                ;;
-                            -r)
-                                labels=( \${(f)"\$(cdf -l)"} )
-                                _describe "label" labels
-                                ;;
-                            -w)
-                                _values "type" @$supported_shells
-                                ;;
-                            -h)
-                                ;;
-                        esac
-                        ;;
-                esac
-            }
-            compdef _cdf cdf
-            EOF
-        } elsif ($type eq "fish") {
-            print <<"            EOF" =~ s/^ {12}//gmr;
-            function cdf
-                if test (count \$argv) -eq 0
-                    command cdf
-                    return
-                end
-                if test (count \$argv) -eq 1; and test \$argv[1] = "--"
-                    command cdf
-                    return
-                end
-                if test (count \$argv) -ge 1; and string match -q -r "^-" -- \$argv[1]; and test \$argv[1] != "--"
-                    command cdf \$argv
-                    return
-                end
-
-                if test \$argv[1] = "--"
-                    set argv \$argv[2..-1]
-                end
-
-                set -l nextpath (command cdf -p \$argv[1])
-                if test -n "\$nextpath"
-                    cd \$nextpath
-                end
-            end
-
-            function __fish_cdf_complete
-                set -l cur (commandline -tc)
-                set -l words (commandline -pco)
-                set -l cword (count \$words)
-                switch \$cword
-                    case 1
-                        switch \$cur
-                            case "-*"
-                                echo -es -- "--" "\\t" "Chdir to the path so labeled"
-                                echo -es -- "-a" "\\t" "Save the path with the label"
-                                echo -es -- "-g" "\\t" "Get the path so labeled"
-                                echo -es -- "-l" "\\t" "List labels"
-                                echo -es -- "-r" "\\t" "Remove Labels"
-                                echo -es -- "-w" "\\t" "Output the wrapper script"
-                                echo -es -- "-h" "\\t" "Print usage"
-                            case "*"
-                                cdf -l | awk '{print \$0 "\\t" "Label"}'
-                        end
-                    case "*"
-                        set -l cmd \$words[2]
-                        switch \$cmd
-                            case "--"
-                                cdf -l | awk '{print \$0 "\\t" "Label"}'
-                            case "-a"
-                                switch \$cword
-                                    case 2
-                                        cdf -l | awk '{print \$0 "\\t" "Label"}'
-                                    case 3
-                                        __fish_complete_directories \$cur
-                                end
-                            case "-g"
-                                cdf -l | awk '{print \$0 "\\t" "Label"}'
-                            case "-r"
-                                cdf -l | awk '{print \$0 "\\t" "Label"}'
-                            case "-w"
-                                printf "%s\\n" @$supported_shells | awk '{print \$0 "\\t" "Shell"}'
-                        end
-                end
-            end
-            complete -c cdf -f -a "(__fish_cdf_complete)"
             EOF
         } else {
             print STDERR "$cmd_name: $mode: $type doesn't supported\n";

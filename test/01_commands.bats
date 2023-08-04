@@ -156,7 +156,7 @@ check() {
 }
 
 @test 'cdf -w: print the wrapper for the shell if shell passed' {
-  check "$cdf" -w fish
+  check "$cdf" -w bash
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") =~ ^'function cdf' ]]
 }
