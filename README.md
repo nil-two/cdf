@@ -30,7 +30,7 @@ usage:
   cdf [--] <label>         # chdir to the labeled path
   cdf -a <label> [<path>]  # label the path (default: working directory)
   cdf -l                   # list labels
-  cdf -L                   # list labels with pathes
+  cdf -L                   # list labels with paths
   cdf -p <label>           # print the labeled path
   cdf -r <label(s)>        # remove labels
   cdf -w [<shell>]         # output the wrapper script (default: sh)
@@ -135,7 +135,7 @@ $ cdf -r home
 (Remove the path labeled home)
 
 $ cdf -r go go2
-(Remove the pathes labeled go and go2)
+(Remove the paths labeled go and go2)
 ```
 
 ### cdf -w [\<shell\>]
@@ -186,7 +186,7 @@ The structure of JSON is as follows:
 ```
 {
   "version": "<registry-version>",
-  "pathes": {
+  "paths": {
     "<label1>": "<path1>",
     "<label2>": "<path2>",
     ...

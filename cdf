@@ -28,7 +28,7 @@ usage:
   $cmd_name [--] <label>         # chdir to the labeled path
   $cmd_name -a <label> [<path>]  # label the path (default: working directory)
   $cmd_name -l                   # list labels
-  $cmd_name -L                   # list labels with pathes
+  $cmd_name -L                   # list labels with paths
   $cmd_name -p <label>           # print the labeled path
   $cmd_name -r <label(s)>        # remove labels
   $cmd_name -w [<shell>]         # output the wrapper script (default: sh)
