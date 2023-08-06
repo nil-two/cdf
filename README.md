@@ -1,7 +1,7 @@
 cdf
 ===
 
-![CI](https://github.com/nil-two/cdf/workflows/CI/badge.svg)
+[![CI](https://github.com/nil-two/cdf/actions/workflows/test.yml/badge.svg)](https://github.com/nil-two/cdf/actions/workflows/test.yml)
 
 Chdir to the favorite directory.
 
