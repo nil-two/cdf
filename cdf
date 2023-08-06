@@ -29,7 +29,7 @@ usage:
   $cmd_name --help                       # print usage
 
 supported-shells:
-  sh, bash
+  sh, bash, zsh
 
 environment-variables:
   CDF_REGISTRY  the registry path (default: ~/.config/cdf/registry.json)
@@ -124,6 +124,7 @@ _cdf() {
   local wrapper_target_shells=(
     sh
     bash
+    zsh
   )
 
   case $COMP_CWORD in
@@ -167,6 +168,108 @@ _cdf() {
 }
 
 complete -F _cdf cdf
+EOF
+my $wrapper_script_for_zsh = <<'EOF';
+cdf() {
+  if [ $# -ge 1 ] && [ "$1" != "${1#-}" ] && [ "$1" != "--" ]; then
+    command -- cdf "$@"
+    return
+  fi
+
+  if [ "$1" = "--" ]; then
+    shift
+  fi
+
+  if [ $# -eq 0 ]; then
+    if [ -z "${CDF_FILTER:-percol}" ]; then
+      echo "cdf: CDF_FILTER is not set" >&2
+      return 1
+    fi
+    set -- "$(command -- cdf --list | sh -c "${CDF_FILTER:-percol}")"
+    if [ -n "$1" ]; then
+      set -- "$(command -- cdf --print "$1")"
+      if [ -n "$1" ]; then
+        cd "$1" || return
+      fi
+    fi
+  else
+    set -- "$(command -- cdf --print "$1")"
+    if [ -n "$1" ]; then
+      cd "$1" || return
+    fi
+  fi
+}
+
+_cdf() {
+  local labels
+  local modes=(
+    --"[chdir to the labeled path]"
+    {-a,--add}"[label the path (default: working directory)]"
+    {-l,--list}"[list labels]"
+    {-L,--list-with-paths}"[list labels with paths]"
+    {-p,--print}"[print the labeled path]"
+    {-r,--remove}"[remove labels]"
+    {-w,--wrapper}"[output the wrapper script (default: sh)]"
+    --help"[print usage]"
+  )
+  local wrapper_target_shells=(
+    sh
+    bash
+    zsh
+  )
+
+  case $CURRENT in
+    2)
+      case ${words[$CURRENT]} in
+        -*)
+          _values "modes" $modes
+          ;;
+        *)
+          labels=( ${(f)"$(cdf --list-with-paths | awk '{gsub("\t", "["); gsub("$", "]"); print}')"} )
+          _values "label" $labels
+          ;;
+      esac
+      ;;
+    *)
+      case ${words[2]} in
+        --)
+          labels=( ${(f)"$(cdf --list-with-paths | awk '{gsub("\t", "["); gsub("$", "]"); print}')"} )
+          _values "label" $labels
+          ;;
+        -a|--add)
+          case $CURRENT in
+            3)
+              labels=( ${(f)"$(cdf --list-with-paths | awk '{gsub("\t", "["); gsub("$", "]"); print}')"} )
+              _values "label" $labels
+              ;;
+            *)
+              _path_files -/
+              ;;
+          esac
+          ;;
+        -l|--list)
+          ;;
+        -l|--list-with-paths)
+          ;;
+        -p|--print)
+          labels=( ${(f)"$(cdf --list-with-paths | awk '{gsub("\t", "["); gsub("$", "]"); print}')"} )
+          _values "label" $labels
+          ;;
+        -r|--remove)
+          labels=( ${(f)"$(cdf --list-with-paths | awk '{gsub("\t", "["); gsub("$", "]"); print}')"} )
+          _values "label" $labels
+          ;;
+        -w|--wrapper)
+          _values "shell" $wrapper_target_shells
+          ;;
+        --help)
+          ;;
+      esac
+      ;;
+  esac
+}
+
+compdef _cdf cdf
 EOF
 
 sub read_file {
@@ -282,6 +385,9 @@ sub do_wrapper {
         return 0;
     } elsif ($shell eq "bash") {
         print $wrapper_script_for_bash;
+        return 0;
+    } elsif ($shell eq "zsh") {
+        print $wrapper_script_for_zsh;
         return 0;
     } else {
         print STDERR "$cmd_name: wrapper: unsupported shell -- '$shell'\n";

@@ -37,7 +37,7 @@ usage:
   cdf --help                       # print usage
 
 supported-shells:
-  sh, bash
+  sh, bash, zsh
 
 environment-variables:
   CDF_REGISTRY  the registry path (default: ~/.config/cdf/registry.json)
@@ -60,6 +60,7 @@ Installation
 |-------|-----------------------|
 | sh    | eval "$(cdf -w)"      |
 | bash  | eval "$(cdf -w bash)" |
+| zsh   | eval "$(cdf -w zsh)"  |
 
 ### Example
 
@@ -163,6 +164,7 @@ Supported shells are as follows:
 
 - sh
 - bash
+- zsh
 
 ```
 $ eval "$(cdf -w)"
@@ -170,6 +172,9 @@ $ eval "$(cdf -w)"
 
 $ eval "$(cdf -w bash)"
 (Enable the shell integration for Bash)
+
+$ eval "$(cdf -w zsh)"
+(Enable the shell integration for Zsh)
 ```
 
 ### cdf --help

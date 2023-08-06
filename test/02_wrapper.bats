@@ -38,4 +38,11 @@ check() {
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
+@test 'cdf wapper: support zsh' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
+  CDF=$cdf check zsh -c 'eval "$("$CDF" -w zsh); cdf usr; pwd"'
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "/usr" ]]
+}
+
 # vim: ft=bash
