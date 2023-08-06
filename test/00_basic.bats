@@ -36,7 +36,7 @@ check() {
   [[ $(cat "$stderr") =~ ^usage ]]
 }
 
-@test 'cdf: output guidance to use cdf -h if unknown command passed' {
+@test 'cdf: output guidance to use cdf --help if unknown command passed' {
   check "$cdf" --vim
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]

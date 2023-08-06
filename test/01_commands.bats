@@ -24,7 +24,7 @@ check() {
   "$@" > "$stdout" 2> "$stderr" || printf "%s\n" "$?" > "$exitcode"
 }
 
-@test 'cdf -a: label the working direcotry if label passed' {
+@test 'cdf -a: label the working directory if label passed' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -a ccc
   check "$cdf" -p ccc
@@ -51,6 +51,13 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
+@test 'cdf -a: -a is a shorthand of --add' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
+  check "$cdf" --add ccc
+  check "$cdf" -p ccc
+  [[ $(cat "$stdout") == "$PWD" ]]
+}
+
 @test 'cdf -l: list sorted labels' {
   printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"ccc\":\"three\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -l
@@ -58,17 +65,17 @@ check() {
   [[ $(cat "$stdout") == $'aaa\nbbb\nccc' ]]
 }
 
-@test 'cdf -l: list sorted labels even if there is no labels' {
+@test 'cdf -l: list sorted labels even if there are no labels' {
   check "$cdf" -l
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "" ]]
 }
 
-@test 'cdf -l: output error if CDF_REGISTRY does not exist' {
-  rm -f -- "$CDF_REGISTRY"
+@test 'cdf -l: -l is a shorthand of --list' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"ccc\":\"three\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -l
-  [[ $(cat "$exitcode") == 1 ]]
-  [[ $(cat "$stderr") != "" ]]
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == $'aaa\nbbb\nccc' ]]
 }
 
 @test 'cdf -L: list sorted labels and paths' {
@@ -78,17 +85,17 @@ check() {
   [[ $(cat "$stdout") == $'aaa\tone\nbbb\ttwo\nccc\tthree' ]]
 }
 
-@test 'cdf -L: list sorted labels even if there is no labels' {
+@test 'cdf -L: list sorted labels even if there are no labels' {
   check "$cdf" -L
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") == "" ]]
 }
 
-@test 'cdf -L: output error if CDF_REGISTRY does not exist' {
-  rm -f -- "$CDF_REGISTRY"
-  check "$cdf" -l
-  [[ $(cat "$exitcode") == 1 ]]
-  [[ $(cat "$stderr") != "" ]]
+@test 'cdf -L: -L is a shorthand of --list-with-paths' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"ccc\":\"three\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
+  check "$cdf" -L
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == $'aaa\tone\nbbb\ttwo\nccc\tthree' ]]
 }
 
 @test 'cdf -p: print the labeled path' {
@@ -111,11 +118,11 @@ check() {
   [[ $(cat "$stdout") == "one" ]]
 }
 
-@test 'cdf -p: output error if CDF_REGISTRY does not exist' {
-  rm -f -- "$CDF_REGISTRY"
+@test 'cdf -p: -p is a shorthand of --print' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\"}}" > "$CDF_REGISTRY"
   check "$cdf" -p aaa
-  [[ $(cat "$exitcode") == 1 ]]
-  [[ $(cat "$stderr") != "" ]]
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "one" ]]
 }
 
 @test 'cdf -r: remove labels' {
@@ -142,11 +149,16 @@ check() {
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -r: output error if CDF_REGISTRY does not exist' {
-  rm -f -- "$CDF_REGISTRY"
-  check "$cdf" -r fn
+@test 'cdf -r: -r is a shorthand of --remove' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"aaa\":\"one\",\"bbb\":\"two\",\"ccc\":\"three\"}}" > "$CDF_REGISTRY"
+  check "$cdf" -r aaa bbb
+  [[ $(cat "$exitcode") == 0 ]]
+  check "$cdf" -p aaa
   [[ $(cat "$exitcode") == 1 ]]
-  [[ $(cat "$stderr") != "" ]]
+  check "$cdf" -p bbb
+  [[ $(cat "$exitcode") == 1 ]]
+  check "$cdf" -p ccc
+  [[ $(cat "$exitcode") == 0 ]]
 }
 
 @test 'cdf -w: print the wrapper for sh if no arguments passed' {
@@ -158,17 +170,23 @@ check() {
 @test 'cdf -w: print the wrapper for the shell if shell passed' {
   check "$cdf" -w bash
   [[ $(cat "$exitcode") == 0 ]]
-  [[ $(cat "$stdout") =~ ^'function cdf' ]]
+  [[ $(cat "$stdout") =~ '_cdf() {' ]]
 }
 
-@test 'cdf -w: output error if the shell does not supported' {
+@test 'cdf -w: output error if the shell is not supported' {
   check "$cdf" -w vim
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
-@test 'cdf -h: print usage' {
-  check "$cdf" -h
+@test 'cdf -w: -w is a shorthand of --wrapper' {
+  check "$cdf" -w
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") =~ ^'cdf() {' ]]
+}
+
+@test 'cdf --help: print usage' {
+  check "$cdf" --help
   [[ $(cat "$exitcode") == 0 ]]
   [[ $(cat "$stdout") =~ ^usage ]]
 }
