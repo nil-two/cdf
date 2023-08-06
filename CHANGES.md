@@ -1,3 +1,9 @@
+### v3.0.0 - 2023-08-06
+
+- Add a way to select the label with fuzzy finder.
+- Add long-opt style modes (e.g. --add, --list).
+- Support only Bash and Bourne Shells.
+
 ### v2.8.0 - 2022-07-03
 
 - Remove true requirements after loading in tcsh.
