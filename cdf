@@ -83,7 +83,7 @@ _cdf() {
   local defaultIFS=$' \t\n'
   local IFS=$defaultIFS
 
-  local options=(
+  local modes=(
     --add
     --list
     --list-with-paths
@@ -102,7 +102,7 @@ _cdf() {
     1)
       case $cur in
         -*)
-          COMPREPLY=( $(compgen -W '"${options[@]}"' -- "$cur") )
+          COMPREPLY=( $(compgen -W '"${modes[@]}"' -- "$cur") )
           ;;
         *)
           IFS=$'\n'; COMPREPLY=( $(compgen -W '$(cdf --list)' -- "$cur") ); IFS=$defaultIFS
