@@ -45,4 +45,11 @@ check() {
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
+@test 'cdf wapper: support yash' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
+  CDF=$cdf check yash -c 'eval "$("$CDF" -w yash); cdf usr; pwd"'
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "/usr" ]]
+}
+
 # vim: ft=bash

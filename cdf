@@ -29,7 +29,7 @@ usage:
   $cmd_name --help                       # print usage
 
 supported-shells:
-  sh, bash, zsh
+  sh, bash, zsh, yash
 
 environment-variables:
   CDF_REGISTRY  the registry path (default: ~/.config/cdf/registry.json)
@@ -50,7 +50,7 @@ cdf() {
     return
   fi
 
-  if [ "$1" = "--" ]; then
+  if [ $# -ge 1 ] && [ "$1" = "--" ]; then
     shift
   fi
 
@@ -96,6 +96,7 @@ _cdf() {
     sh
     bash
     zsh
+    yash
   )
 
   case $COMP_CWORD in
@@ -158,6 +159,7 @@ _cdf() {
     sh
     bash
     zsh
+    yash
   )
 
   case $CURRENT in
@@ -212,6 +214,81 @@ _cdf() {
 }
 
 compdef _cdf cdf
+EOF
+my $wrapper_script_for_yash = $wrapper_script_for_sh . <<'EOF';
+
+function completion/cdf() {
+  case ${WORDS[#]} in
+    1)
+      case $TARGETWORD in
+        --*) command -f completion/cdf::complete_long_modes ;;
+        -*)  command -f completion/cdf::complete_short_modes ;;
+        *)   command -f completion/cdf::complete_labels ;;
+      esac
+      ;;
+    *)
+      case ${WORDS[2]} in
+        --)
+          command -f completion/cdf::complete_labels
+          ;;
+        -a|--add)
+          case ${WORDS[#]} in
+            2) command -f completion/cdf::complete_labels ;;
+            *) complete -d ;;
+          esac
+          ;;
+        -p|--print)
+          command -f completion/cdf::complete_labels
+          ;;
+        -l|--list)
+          ;;
+        -l|--list-with-paths)
+          ;;
+        -r|--remove)
+          command -f completion/cdf::complete_labels
+          ;;
+        -w|--wrapper)
+          command -f completion/cdf::complete_wrapper_taget_shells
+          ;;
+        --help)
+          ;;
+      esac
+      ;;
+  esac
+}
+
+function completion/cdf::complete_long_modes() {
+  complete -D "chdir to the labeled path"                   -- --
+  complete -D "label the path (default: working directory)" -- --add
+  complete -D "list labels"                                 -- --list
+  complete -D "list labels with paths"                      -- --list-with-paths
+  complete -D "print the labeled path"                      -- --print
+  complete -D "remove labels"                               -- --remove
+  complete -D "output the wrapper script (default: sh)"     -- --wrapper
+  complete -D "print usage"                                 -- --help
+}
+
+function completion/cdf::complete_short_modes() {
+  complete -D "chdir to the labeled path"                   -- --
+  complete -D "label the path (default: working directory)" -- -a
+  complete -D "list labels"                                 -- -l
+  complete -D "list labels with paths"                      -- -L
+  complete -D "print the labeled path"                      -- -p
+  complete -D "remove labels"                               -- -r
+  complete -D "output the wrapper script (default: sh)"     -- -w
+  complete -D "print usage"                                 -- --help
+}
+
+function completion/cdf::complete_labels {
+  typeset labels label
+  labels=$(cdf --list-with-paths) && while read -r label path; do
+    complete -D "$path" -- "$label"
+  done <<< "$labels"
+}
+
+function completion/cdf::complete_wrapper_taget_shells {
+  complete -- sh bash zsh yash
+}
 EOF
 
 sub read_file {
@@ -330,6 +407,9 @@ sub do_wrapper {
         return 0;
     } elsif ($shell eq "zsh") {
         print $wrapper_script_for_zsh;
+        return 0;
+    } elsif ($shell eq "yash") {
+        print $wrapper_script_for_yash;
         return 0;
     } else {
         print STDERR "$cmd_name: wrapper: unsupported shell -- '$shell'\n";
