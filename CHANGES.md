@@ -1,3 +1,8 @@
+### v3.1.0 - 2023-08-06
+
+- Resupport Zsh.
+- Resupport Yash.
+
 ### v3.0.0 - 2023-08-06
 
 - Add a way to select the label with fuzzy finder.
