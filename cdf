@@ -74,36 +74,7 @@ cdf() {
   fi
 }
 EOF
-my $wrapper_script_for_bash = <<'EOF';
-cdf() {
-  if [ $# -ge 1 ] && [ "$1" != "${1#-}" ] && [ "$1" != "--" ]; then
-    command -- cdf "$@"
-    return
-  fi
-
-  if [ "$1" = "--" ]; then
-    shift
-  fi
-
-  if [ $# -eq 0 ]; then
-    if [ -z "${CDF_FILTER:-percol}" ]; then
-      echo "cdf: CDF_FILTER is not set" >&2
-      return 1
-    fi
-    set -- "$(command -- cdf --list | sh -c "${CDF_FILTER:-percol}")"
-    if [ -n "$1" ]; then
-      set -- "$(command -- cdf --print "$1")"
-      if [ -n "$1" ]; then
-        cd "$1" || return
-      fi
-    fi
-  else
-    set -- "$(command -- cdf --print "$1")"
-    if [ -n "$1" ]; then
-      cd "$1" || return
-    fi
-  fi
-}
+my $wrapper_script_for_bash = $wrapper_script_for_sh . <<'EOF';
 
 _cdf() {
   local cur prev words cword split
@@ -169,36 +140,7 @@ _cdf() {
 
 complete -F _cdf cdf
 EOF
-my $wrapper_script_for_zsh = <<'EOF';
-cdf() {
-  if [ $# -ge 1 ] && [ "$1" != "${1#-}" ] && [ "$1" != "--" ]; then
-    command -- cdf "$@"
-    return
-  fi
-
-  if [ "$1" = "--" ]; then
-    shift
-  fi
-
-  if [ $# -eq 0 ]; then
-    if [ -z "${CDF_FILTER:-percol}" ]; then
-      echo "cdf: CDF_FILTER is not set" >&2
-      return 1
-    fi
-    set -- "$(command -- cdf --list | sh -c "${CDF_FILTER:-percol}")"
-    if [ -n "$1" ]; then
-      set -- "$(command -- cdf --print "$1")"
-      if [ -n "$1" ]; then
-        cd "$1" || return
-      fi
-    fi
-  else
-    set -- "$(command -- cdf --print "$1")"
-    if [ -n "$1" ]; then
-      cd "$1" || return
-    fi
-  fi
-}
+my $wrapper_script_for_zsh = $wrapper_script_for_sh . <<'EOF';
 
 _cdf() {
   local labels
