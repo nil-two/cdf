@@ -1,3 +1,7 @@
+### v3.2.0 - 2023-09-08
+
+- Resupport Fish.
+
 ### v3.1.0 - 2023-08-06
 
 - Resupport Zsh.
