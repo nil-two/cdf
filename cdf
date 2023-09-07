@@ -29,7 +29,7 @@ usage:
   $cmd_name --help                       # print usage
 
 supported-shells:
-  sh, bash, zsh, yash
+  sh, bash, zsh, yash, fish
 
 environment-variables:
   CDF_REGISTRY  the registry path (default: ~/.config/cdf/registry.json)
@@ -74,6 +74,7 @@ cdf() {
   fi
 }
 EOF
+
 my $wrapper_script_for_bash = $wrapper_script_for_sh . <<'EOF';
 
 _cdf() {
@@ -97,6 +98,7 @@ _cdf() {
     bash
     zsh
     yash
+    fish
   )
 
   case $COMP_CWORD in
@@ -141,6 +143,7 @@ _cdf() {
 
 complete -F _cdf cdf
 EOF
+
 my $wrapper_script_for_zsh = $wrapper_script_for_sh . <<'EOF';
 
 _cdf() {
@@ -160,6 +163,7 @@ _cdf() {
     bash
     zsh
     yash
+    fish
   )
 
   case $CURRENT in
@@ -215,6 +219,7 @@ _cdf() {
 
 compdef _cdf cdf
 EOF
+
 my $wrapper_script_for_yash = $wrapper_script_for_sh . <<'EOF';
 
 function completion/cdf() {
@@ -287,8 +292,99 @@ function completion/cdf::complete_labels {
 }
 
 function completion/cdf::complete_wrapper_taget_shells {
-  complete -- sh bash zsh yash
+  complete -- sh bash zsh yash fish
 }
+EOF
+
+my $wrapper_script_for_fish = <<'EOF';
+function cdf
+  if test (count $argv) -ge 1; and string match -qr "^-" -- $argv[1]; and test $argv[1] != "--"
+    command cdf $argv
+    return
+  end
+
+  if test (count $argv) -ge 1; and test $argv[1] = "--"
+    set argv $argv[2..-1]
+  end
+
+  set -l cdf_filter ''
+  if set -q CDF_FILTER
+    set cdf_filter $CDF_FILTER
+  else
+    set cdf_filter percol
+  end
+
+  if test (count $argv) -eq 0
+    if test -z $cdf_filter
+      echo "cdf: CDF_FILTER is not set" >&2
+      return 1
+    end
+    set -l next_label (command cdf --list | sh -c $cdf_filter)
+    if test -n $next_label
+      set -l next_path (command cdf --print $next_label)
+      if test -n $next_path
+        cd $next_path || return
+      end
+    end
+  else
+    set -l next_label $argv[1]
+    set -l next_path (command cdf --print $next_label)
+    if test -n $next_path
+      cd $next_path || return
+    end
+  end
+end
+
+function __fish_cdf_complete
+  set -l cur (commandline -tc)
+  set -l words (commandline -pco)
+  set -l cword (count $words)
+  switch $cword
+    case 1
+      switch $cur
+        case "--*"
+          echo -es -- "--"                "\t" "Chdir to the labeled path"
+          echo -es -- "--add"             "\t" "Label the path (default: working directory)"
+          echo -es -- "--list"            "\t" "List labels"
+          echo -es -- "--list-with-paths" "\t" "List labels with paths"
+          echo -es -- "--print"           "\t" "Print the labeled path"
+          echo -es -- "--remove"          "\t" "Remove labels"
+          echo -es -- "--wrapper"         "\t" "Output the wrapper script (default: sh)"
+          echo -es -- "--help"            "\t" "Print usage"
+        case "-*"
+          echo -es -- "--"     "\t" "Chdir to the labeled path"
+          echo -es -- "-a"     "\t" "Label the path (default: working directory)"
+          echo -es -- "-l"     "\t" "List labels"
+          echo -es -- "-L"     "\t" "List labels with paths"
+          echo -es -- "-p"     "\t" "Print the labeled path"
+          echo -es -- "-r"     "\t" "Remove labels"
+          echo -es -- "-w"     "\t" "Output the wrapper script (default: sh)"
+          echo -es -- "--help" "\t" "Print usage"
+        case "*"
+          cdf --list-with-paths
+      end
+    case "*"
+      set -l cmd $words[2]
+      switch $cmd
+        case "--"
+          cdf --list-with-paths
+        case "-a" "--add"
+          switch $cword
+            case 2
+              cdf --list-with-paths
+            case 3
+              __fish_complete_directories $cur
+          end
+        case "-p" "--print"
+          cdf --list-with-paths
+        case "-r" "--remove"
+          cdf --list-with-paths
+        case "-w" "--wrapper"
+          printf "%s\n" sh bash zsh yash fish | awk '{print $0 "\t" "Shell"}'
+      end
+  end
+end
+complete -c cdf -f -a "(__fish_cdf_complete)"
 EOF
 
 sub read_file {
@@ -410,6 +506,9 @@ sub do_wrapper {
         return 0;
     } elsif ($shell eq "yash") {
         print $wrapper_script_for_yash;
+        return 0;
+    } elsif ($shell eq "fish") {
+        print $wrapper_script_for_fish;
         return 0;
     } else {
         print STDERR "$cmd_name: wrapper: unsupported shell -- '$shell'\n";

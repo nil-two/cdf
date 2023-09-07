@@ -37,7 +37,7 @@ usage:
   cdf --help                       # print usage
 
 supported-shells:
-  sh, bash, zsh, yash
+  sh, bash, zsh, yash, fish
 
 environment-variables:
   CDF_REGISTRY  the registry path (default: ~/.config/cdf/registry.json)
@@ -56,12 +56,13 @@ Installation
 2. Make `cdf` executable.
 3. Add the following config to your shell's profile.
 
-| Shell |                       |
-|-------|-----------------------|
-| sh    | eval "$(cdf -w)"      |
-| bash  | eval "$(cdf -w bash)" |
-| zsh   | eval "$(cdf -w zsh)"  |
-| yash  | eval "$(cdf -w yash)" |
+| Shell |                              |
+|-------|------------------------------|
+| sh    | eval "$(cdf -w)"             |
+| bash  | eval "$(cdf -w bash)"        |
+| zsh   | eval "$(cdf -w zsh)"         |
+| yash  | eval "$(cdf -w yash)"        |
+| fish  | source (cdf -w fish \| psub) |
 
 ### Example
 
@@ -167,6 +168,7 @@ Supported shells are as follows:
 - bash
 - zsh
 - yash
+- fish
 
 ```
 $ eval "$(cdf -w)"
@@ -180,6 +182,9 @@ $ eval "$(cdf -w zsh)"
 
 $ eval "$(cdf -w yash)"
 (Enable the shell integration for Yash)
+
+$ source (cdf -w fish | psub)
+(Enable the shell integration for Fish)
 ```
 
 ### cdf --help

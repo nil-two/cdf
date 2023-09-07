@@ -52,4 +52,12 @@ check() {
   [[ $(cat "$stdout") == "/usr" ]]
 }
 
+@test 'cdf wapper: support fish' {
+  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{\"usr\":\"/usr\"}}" > "$CDF_REGISTRY"
+  CDF=$cdf check fish -c 'source ($CDF -w fish | psub); cdf usr; pwd'
+  cat "$stderr"
+  [[ $(cat "$exitcode") == 0 ]]
+  [[ $(cat "$stdout") == "/usr" ]]
+}
+
 # vim: ft=bash
