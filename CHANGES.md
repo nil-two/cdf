@@ -7,6 +7,7 @@
 
 - Add a way to select the label with fuzzy finder.
 - Add long-opt style modes (e.g. --add, --list).
+- Rename -g to -p, --print
 - Support only Bash and Bourne Shells.
 
 ### v2.8.0 - 2022-07-03
