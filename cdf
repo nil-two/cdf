@@ -298,39 +298,39 @@ EOF
 
 my $wrapper_script_for_fish = <<'EOF';
 function cdf
-  if test (count $argv) -ge 1; and string match -qr "^-" -- $argv[1]; and test $argv[1] != "--"
+  if test (count $argv) -ge 1; and string match -qr "^-" -- "$argv[1]"; and test "$argv[1]" != "--"
     command cdf $argv
     return
   end
 
-  if test (count $argv) -ge 1; and test $argv[1] = "--"
+  if test (count $argv) -ge 1; and test "$argv[1]" = "--"
     set argv $argv[2..-1]
   end
 
   set -l cdf_filter ''
   if set -q CDF_FILTER
-    set cdf_filter $CDF_FILTER
+    set cdf_filter "$CDF_FILTER"
   else
     set cdf_filter percol
   end
 
   if test (count $argv) -eq 0
-    if test -z $cdf_filter
+    if test -z "$cdf_filter"
       echo "cdf: CDF_FILTER is not set" >&2
       return 1
     end
-    set -l next_label (command cdf --list | sh -c $cdf_filter)
-    if test -n $next_label
-      set -l next_path (command cdf --print $next_label)
-      if test -n $next_path
-        cd $next_path || return
+    set -l next_label (command cdf --list | sh -c "$cdf_filter")
+    if test -n "$next_label"
+      set -l next_path (command cdf --print "$next_label")
+      if test -n "$next_path"
+        cd "$next_path" || return
       end
     end
   else
-    set -l next_label $argv[1]
-    set -l next_path (command cdf --print $next_label)
-    if test -n $next_path
-      cd $next_path || return
+    set -l next_label "$argv[1]"
+    set -l next_path (command cdf --print "$next_label")
+    if test -n "$next_path"
+      cd "$next_path" || return
     end
   end
 end
@@ -364,7 +364,7 @@ function __fish_cdf_complete
           cdf --list-with-paths
       end
     case "*"
-      set -l cmd $words[2]
+      set -l cmd "$words[2]"
       switch $cmd
         case "--"
           cdf --list-with-paths
@@ -373,18 +373,18 @@ function __fish_cdf_complete
             case 2
               cdf --list-with-paths
             case 3
-              __fish_complete_directories $cur
+              __fish_complete_directories "$cur"
           end
         case "-p" "--print"
           cdf --list-with-paths
         case "-r" "--remove"
           cdf --list-with-paths
         case "-w" "--wrapper"
-          printf "%s\n" sh bash zsh yash fish | awk '{print $0 "\t" "Shell"}'
+          printf "%s\tShell\n" sh bash zsh yash fish
       end
   end
 end
-complete -c cdf -f -a "(__fish_cdf_complete)"
+complete -c cdf -xa "(__fish_cdf_complete)"
 EOF
 
 sub read_file {
