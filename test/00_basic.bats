@@ -1,16 +1,13 @@
 #!/usr/bin/env bats
 
-readonly cdf=$BATS_TEST_DIRNAME/../cdf
-readonly tmpdir=$BATS_TEST_DIRNAME/../tmp
-readonly stdout=$BATS_TEST_DIRNAME/../tmp/stdout
-readonly stderr=$BATS_TEST_DIRNAME/../tmp/stderr
-readonly exitcode=$BATS_TEST_DIRNAME/../tmp/exitcode
+cmd=$BATS_TEST_DIRNAME/../cdf
+tmpdir=$BATS_TEST_DIRNAME/../tmp
+stdout=$BATS_TEST_DIRNAME/../tmp/stdout
+stderr=$BATS_TEST_DIRNAME/../tmp/stderr
+exitcode=$BATS_TEST_DIRNAME/../tmp/exitcode
 
 setup() {
   mkdir -p -- "$tmpdir"
-  export PATH=$(dirname "$BATS_TEST_DIRNAME"):$PATH
-  export CDF_REGISTRY=$tmpdir/registry.json
-  printf "%s\n" "{\"version\":\"3.0\",\"labels\":{}}" > "$CDF_REGISTRY"
 }
 
 teardown() {
@@ -25,31 +22,31 @@ check() {
 }
 
 @test 'cdf: print usage if no arguments passed' {
-  check "$cdf"
+  check "$cmd"
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^usage ]]
 }
 
 @test 'cdf: print usage if double-dash passed' {
-  check "$cdf" --
+  check "$cmd" --
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^usage ]]
 }
 
 @test 'cdf: output guidance to use cdf --help if unknown command passed' {
-  check "$cdf" --vim
+  check "$cmd" --vim
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") != "" ]]
 }
 
 @test 'cdf: output guidance to use cdf -w if label passed' {
-  check "$cdf" fn
+  check "$cmd" fn
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^"cdf: shell integration not enabled" ]]
 }
 
 @test 'cdf: output guidance to use cdf -w if label passed with double-dash' {
-  check "$cdf" -- fn
+  check "$cmd" -- fn
   [[ $(cat "$exitcode") == 1 ]]
   [[ $(cat "$stderr") =~ ^'cdf: shell integration not enabled' ]]
 }
