@@ -1,3 +1,7 @@
+### v3.2.1 - 2023-09-10
+
+- Fix the bug that chdir to home when the user cancels selecting a label in Fish.
+
 ### v3.2.0 - 2023-09-08
 
 - Resupport Fish.
