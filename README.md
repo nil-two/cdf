@@ -192,7 +192,7 @@ $ source (cdf -w fish | psub)
 Print usage.
 
 ```
-$ cdf -h
+$ cdf --help
 (Print usage)
 ```
 
