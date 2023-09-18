@@ -26,15 +26,15 @@ Usage
 
 ```
 usage:
-  cdf [--]                         # select a label and chdir to the labeled path
-  cdf [--] <label>                 # chdir to the labeled path
-  cdf {-a|--add} <label> [<path>]  # label the path (default: working directory)
-  cdf {-l|--list}                  # list labels
-  cdf {-L|--list-with-paths}       # list labels with paths
-  cdf {-p|--print} <label>         # print the labeled path
-  cdf {-r|--remove} <label(s)>     # remove labels
-  cdf {-w|--wrapper} [<shell>]     # output the wrapper script (default: sh)
-  cdf --help                       # print usage
+  cdf [--]                         select a label and chdir to the labeled path
+  cdf [--] <label>                 chdir to the labeled path
+  cdf {-a|--add} <label> [<path>]  label the path (default: working directory)
+  cdf {-l|--list}                  list labels
+  cdf {-L|--list-with-paths}       list labels with paths
+  cdf {-p|--print} <label>         print the labeled path
+  cdf {-r|--remove} <label(s)>     remove labels
+  cdf {-w|--wrapper} [<shell>]     output the wrapper script (default: sh)
+  cdf --help                       print usage
 
 supported-shells:
   sh, bash, zsh, yash, fish

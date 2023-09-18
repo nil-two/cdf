@@ -18,15 +18,15 @@ my $registry_default = {
 my $cmd_name = $0 =~ s/.*\///r;
 my $cmd_usage = <<EOF;
 usage:
-  $cmd_name [--]                         # select a label and chdir to the labeled path
-  $cmd_name [--] <label>                 # chdir to the labeled path
-  $cmd_name {-a|--add} <label> [<path>]  # label the path (default: working directory)
-  $cmd_name {-l|--list}                  # list labels
-  $cmd_name {-L|--list-with-paths}       # list labels with paths
-  $cmd_name {-p|--print} <label>         # print the labeled path
-  $cmd_name {-r|--remove} <label(s)>     # remove labels
-  $cmd_name {-w|--wrapper} [<shell>]     # output the wrapper script (default: sh)
-  $cmd_name --help                       # print usage
+  $cmd_name [--]                         select a label and chdir to the labeled path
+  $cmd_name [--] <label>                 chdir to the labeled path
+  $cmd_name {-a|--add} <label> [<path>]  label the path (default: working directory)
+  $cmd_name {-l|--list}                  list labels
+  $cmd_name {-L|--list-with-paths}       list labels with paths
+  $cmd_name {-p|--print} <label>         print the labeled path
+  $cmd_name {-r|--remove} <label(s)>     remove labels
+  $cmd_name {-w|--wrapper} [<shell>]     output the wrapper script (default: sh)
+  $cmd_name --help                       print usage
 
 supported-shells:
   sh, bash, zsh, yash, fish
