@@ -34,7 +34,7 @@ usage:
   cdf {-p|--print} <label>         print the labeled path
   cdf {-r|--remove} <label(s)>     remove labels
   cdf {-w|--wrapper} [<shell>]     output the wrapper script (default: sh)
-  cdf --help                       print usage
+  cdf --help                       print usage and exit
 
 supported-shells:
   sh, bash, zsh, yash, fish

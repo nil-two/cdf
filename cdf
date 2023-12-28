@@ -26,7 +26,7 @@ usage:
   $cmd_name {-p|--print} <label>         print the labeled path
   $cmd_name {-r|--remove} <label(s)>     remove labels
   $cmd_name {-w|--wrapper} [<shell>]     output the wrapper script (default: sh)
-  $cmd_name --help                       print usage
+  $cmd_name --help                       print usage and exit
 
 supported-shells:
   sh, bash, zsh, yash, fish
